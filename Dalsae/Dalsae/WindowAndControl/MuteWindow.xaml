@@ -1,0 +1,52 @@
+﻿<Window x:Class="Dalsae.WindowAndControl.MuteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dalsae.WindowAndControl"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Title="뮤트, 단어 알림 설정" Height="560" Width="500" KeyDown="window_KeyDown">
+    <Grid>
+        <GroupBox x:Name="groupBox" Header="단어 알림" HorizontalAlignment="Left" VerticalAlignment="Top" Height="152" Width="232" Margin="10,10,0,0">
+            <Grid>
+                <ListBox x:Name="listBoxHighlight" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="220" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}"/>
+                <TextBox x:Name="textBoxHighlight" HorizontalAlignment="Left" Height="24" Margin="0,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <Button x:Name="buttonAddHighlight" Content="추가" HorizontalAlignment="Left" Margin="127,105,0,0" VerticalAlignment="Top" Width="40" Click="buttonAddHighlight_Click"/>
+                <Button x:Name="buttonDelHighlight" Content="삭제" HorizontalAlignment="Left" Margin="180,105,0,0" VerticalAlignment="Top" Width="40" Click="buttonDelHighlight_Click"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="groupBox_Copy" Header="단어 뮤트" HorizontalAlignment="Left" VerticalAlignment="Top" Height="152" Width="232" Margin="252,10,0,0">
+            <Grid>
+                <ListBox x:Name="listBoxWord" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="220" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}"/>
+                <TextBox x:Name="textBoxWord" HorizontalAlignment="Left" Height="24" Margin="0,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <Button x:Name="buttonAddWord" Content="추가" HorizontalAlignment="Left" Margin="127,105,0,0" VerticalAlignment="Top" Width="40" Click="buttonAddWord_Click"/>
+                <Button x:Name="buttonDelWord" Content="삭제" HorizontalAlignment="Left" Margin="180,105,0,0" VerticalAlignment="Top" Width="40" Click="buttonDelWord_Click"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="groupBox_Copy1" Header="유저 뮤트" HorizontalAlignment="Left" VerticalAlignment="Top" Height="152" Width="232" Margin="10,167,0,0">
+            <Grid>
+                <ListBox x:Name="listBoxUser" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="220" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}"/>
+                <TextBox x:Name="textBoxUser" HorizontalAlignment="Left" Height="24" Margin="0,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <Button x:Name="buttonAddUser" Content="추가" HorizontalAlignment="Left" Margin="127,105,0,0" VerticalAlignment="Top" Width="40" Click="buttonAddUser_Click"/>
+                <Button x:Name="buttonDelUser" Content="삭제" HorizontalAlignment="Left" Margin="180,105,0,0" VerticalAlignment="Top" Width="40" Click="buttonDelUser_Click"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="groupBox_Copy2" Header="클라이언트 뮤트" HorizontalAlignment="Left" VerticalAlignment="Top" Height="152" Width="232" Margin="252,167,0,0">
+            <Grid>
+                <ListBox x:Name="listBoxClient" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="220" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}"/>
+                <TextBox x:Name="textBoxClient" HorizontalAlignment="Left" Height="24" Margin="0,105,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+                <Button x:Name="buttonAddClient" Content="추가" HorizontalAlignment="Left" Margin="127,105,0,0" VerticalAlignment="Top" Width="40" Click="buttonAddClient_Click"/>
+                <Button x:Name="buttonDelClient" Content="삭제" HorizontalAlignment="Left" Margin="180,105,0,0" VerticalAlignment="Top" Width="40" Click="buttonDelClient_Click"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="groupBox_Copy3" Header="트윗 뮤트(추가 불가)" HorizontalAlignment="Left" VerticalAlignment="Top" Height="152" Width="474" Margin="10,324,0,0">
+            <Grid>
+                <ListBox x:Name="listBoxTweet" Height="100" VerticalAlignment="Top" Width="462" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" HorizontalAlignment="Left"/>
+                <Button x:Name="buttonDelTweet" Content="삭제" HorizontalAlignment="Left" Margin="402,105,0,0" VerticalAlignment="Top" Width="60" Click="buttonDelTweet_Click"/>
+            </Grid>
+        </GroupBox>
+        <Button x:Name="buttonOk" Content="확인" HorizontalAlignment="Left" Margin="314,0,0,10" VerticalAlignment="Bottom" Width="75" Click="buttonOk_Click"/>
+        <Button x:Name="buttonCancle" Content="취소" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" Click="buttonCancle_Click"/>
+    </Grid>
+</Window>

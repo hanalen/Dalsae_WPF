@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dalsae="clr-namespace:Dalsae">
+    <dalsae:TweetTemplateSelector x:Key="myTweetTemplateSelector"/>
+    <dalsae:DeahwaTemplate x:Key="deahwaTemplate"/>
+    <dalsae:DataManager x:Key="myOption"/>
+    <dalsae:BoolConverter x:Key="boolConverter"/>
+    <dalsae:PreviewConverter x:Key="imageConverter"/>
+    <dalsae:FontColorConverter x:Key="fontColorConverter"/>
+    <dalsae:DeahwaConverter x:Key="deahwaConverter"/>
+    <dalsae:SumConverter x:Key="SumConverterInstance" />
+    <dalsae:BackgroundConvert x:Key="BackgroundConverter"/>
+    <dalsae:ParentCountConverter x:Key="ParentCountConverterInstance" />
+    <dalsae:PropicConverter x:Key="convertPropic"/>
+    <ContextMenu x:Key="contextMenu"/>
+    <ControlTemplate x:Key="diableScroll">
+        <ItemsPresenter/>
+    </ControlTemplate>
+        <!--트리뷰에 스크롤뷰어 안 생기게 하는 코드-->
+    <ControlTemplate TargetType="TreeView" x:Key="treeTemplate">
+        <ItemsPresenter/>
+    </ControlTemplate>
+
+    <!--<TreeView.ItemContainerStyle>
+        <Style TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsExpanded" Value="True"/>
+        </Style>
+    </TreeView.ItemContainerStyle>-->
+</ResourceDictionary>

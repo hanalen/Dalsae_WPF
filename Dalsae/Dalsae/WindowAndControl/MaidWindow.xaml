@@ -1,0 +1,50 @@
+﻿<Window x:Class="Dalsae.WindowAndControl.MaidWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dalsae.WindowAndControl"
+        mc:Ignorable="d"
+        KeyDown="Window_KeyDown"
+        Title="달새를 만든 사람" Height="230.124" Width="516.198" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" FontFamily="맑은 고딕" FontSize="14" Background="#FFFFE0E0">
+    <Grid>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="만든 사람:" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="10,34,0,0" TextWrapping="Wrap" Text="공식 계정:" VerticalAlignment="Top"/>
+        
+        <TextBlock x:Name="textBlock4" HorizontalAlignment="Left" Margin="227,10,0,0" TextWrapping="Wrap" Text="도움을 주신 분:" VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock5" HorizontalAlignment="Left" Margin="330,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+            나라하(<Hyperlink NavigateUri="https://twitter.com/geolight" RequestNavigate="hyperLink_Click">
+            @geolight
+            </Hyperlink>)<LineBreak/>
+            
+            륜아린(<Hyperlink NavigateUri="https://twitter.com/_RyuaRin" RequestNavigate="hyperLink_Click">
+            @_RyuaRin
+            </Hyperlink>)<LineBreak/>
+            
+            사츠키(<Hyperlink NavigateUri="https://twitter.com/spr0tsuki" RequestNavigate="hyperLink_Click">
+            @spr0tsuki)
+             </Hyperlink>)<LineBreak/>
+            
+            사파이어(<Hyperlink NavigateUri="https://twitter.com/sapphire_dev" RequestNavigate="hyperLink_Click">
+            @sapphire_dev
+            </Hyperlink>)<LineBreak/>
+        </TextBlock>
+        <TextBlock x:Name="labelVersion" HorizontalAlignment="Left" Margin="10,172,0,0" TextWrapping="Wrap" Text="버전 0.51" VerticalAlignment="Top"/>
+
+        <TextBlock x:Name="textBlock1" HorizontalAlignment="Left" Margin="84,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+            하날엔(<Hyperlink NavigateUri="https://twitter.com/hanalen_" RequestNavigate="hyperLink_Click">
+            @hanalen_
+            </Hyperlink>)<LineBreak/>
+        </TextBlock>
+        <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="84,34,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+            달새(<Hyperlink NavigateUri="https://twitter.com/Dalsae_info" RequestNavigate="hyperLink_Click">
+            @Dalsae_info
+           </Hyperlink>)<LineBreak/>
+        </TextBlock>
+        <TextBlock x:Name="textBlock6" HorizontalAlignment="Left" Margin="10,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0.567,0.225">
+            공식 배포 페이지: <Hyperlink NavigateUri="https://github.com/hanalen-/Dalsae_WPF/releases" RequestNavigate="hyperLink_Click">
+            바로 가기
+           </Hyperlink><LineBreak/>
+        </TextBlock>
+    </Grid>
+</Window>

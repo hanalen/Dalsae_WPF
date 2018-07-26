@@ -1,0 +1,124 @@
+﻿<Window x:Class="Dalsae.WindowAndControl.OptionWIndow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dalsae.WindowAndControl"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Title="설정" Height="741" Width="519" KeyDown="window_KeyDown">
+    <Grid>
+        <GroupBox x:Name="groupBox" Header="알림" HorizontalAlignment="Left" Margin="10,140,0,0" VerticalAlignment="Top" Height="180" Width="230">
+            <Grid>
+                <CheckBox x:Name="checkNotiMention" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock><Run Text="리트윗 알림을"/><LineBreak/><Run Text="멘션함에 표시합니다."/></TextBlock>
+                    </StackPanel>
+                </CheckBox>
+                <CheckBox x:Name="checkNotiTL" Content="리트윗 알림을 TL에 띄웁니다." HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkPlayNoti" Content="알림 소리 재생" HorizontalAlignment="Left" Margin="10,86,0,0" VerticalAlignment="Top" Checked="checkPlayNoti_Chacked" Unchecked="checkPlayNoti_Unchecked"/>
+                <ComboBox x:Name="comboNoti" HorizontalAlignment="Left" Margin="94,106,0,0" VerticalAlignment="Top" Width="120"/>
+                <TextBlock x:Name="textNoti" HorizontalAlignment="Left" Margin="30,106,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="알림 소리: "/>
+                <CheckBox x:Name="checkMute" Content="멘션함도 뮤트 작동" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <TextBlock x:Name="textNoti2" HorizontalAlignment="Left" Margin="30,133,0,0" TextWrapping="Wrap" Text="(Sound폴더에 *.wav만 가능)" VerticalAlignment="Top"/>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox x:Name="groupBox2" Header="트윗 등록" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="125" Width="230">
+            <Grid>
+                <CheckBox x:Name="checkSendTweet" Content="트윗 등록 시 확인 창을 띄웁니다." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkRetweetProtect" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock><Run Text="프로텍트 유저 글도 리트윗 하기"/><LineBreak/><Run Text="(아이디는 ***처리)"/></TextBlock>
+                    </StackPanel>
+                </CheckBox>
+                <CheckBox x:Name="checkSendEnter" HorizontalAlignment="Left" Margin="10,66,0,0" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock><Run Text=" Enter키로 트윗을 등록합니다."/><LineBreak/><Run Text="(해제 시 Ctrl+Enter로 등록)"/></TextBlock>
+                    </StackPanel>
+                </CheckBox>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox x:Name="groupBox3" Header="UI" HorizontalAlignment="Left" Margin="260,140,0,0" VerticalAlignment="Top" Height="180" Width="235">
+            <Grid>
+                <CheckBox x:Name="checkSmallUI" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock><Run Text="트윗 입력창을 작게 하고"/><LineBreak/><Run Text="인장을 표시하지 않습니다."/></TextBlock>
+                    </StackPanel>
+                </CheckBox>
+                <CheckBox x:Name="checkShowPreview" Content="이미지 미리보기를 표시합니다." HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
+                <ComboBox x:Name="comboSkin" HorizontalAlignment="Left" Margin="69,66,0,0" VerticalAlignment="Top" Width="120"/>
+                <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="32,66,0,0" TextWrapping="Wrap" Text="스킨:" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkShowPropic" Content="인장을 표시합니다." HorizontalAlignment="Left" Margin="10,93,0,0" VerticalAlignment="Top" Checked="checkShowPropic_Checked" Unchecked="checkShowPropic_Unchecked"/>
+                <CheckBox x:Name="checkShowBigPropic" Content="인장을 크게 표시합니다." HorizontalAlignment="Left" Margin="32,113,0,0" VerticalAlignment="Top"/>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox x:Name="groupBox4" Header="이미지 뷰어" HorizontalAlignment="Left" Margin="260,10,0,0" VerticalAlignment="Top" Height="125" Width="235">
+            <Grid>
+                <CheckBox x:Name="checkShowTweet" Content="이미지 뷰어 트윗 표시" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkBottomPreview" Content="이미지 뷰어 하단 미리보기 표시" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkLoadOrg" HorizontalAlignment="Left" Margin="10,50,-7,0" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock><Run Text=" 이미지 뷰어 원본 불러오기"/><LineBreak/><Run Text="(체크 시 불러오기가 오래 걸립니다.)"/></TextBlock>
+                    </StackPanel>
+                </CheckBox>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="groupBox1" Header="기타" HorizontalAlignment="Left" Margin="10,466,0,0" VerticalAlignment="Top" Height="150" Width="485">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="56"/>
+                    <RowDefinition Height="34"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="104*"/>
+                    <ColumnDefinition Width="369*"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox x:Name="comboFont" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" Grid.Column="1" Width="150" Height="30" HorizontalAlignment="Left" Margin="10,0,0,0">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock FontSize="16" Text="{Binding Path=Source}" FontFamily="{Binding}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <ComboBox x:Name="comboFontSize" VirtualizingPanel.VirtualizationMode="Recycling" Grid.Column="1" Width="50" Height="30" HorizontalAlignment="Left" Margin="165,5,0,5"/>
+                <CheckBox x:Name="cbBold" Content="굵게" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,11,0,0"/>
+
+                <TextBlock x:Name="textBlock4" HorizontalAlignment="Left" Margin="42,10,0,0" TextWrapping="Wrap" Text="폰트 설정" VerticalAlignment="Top" Height="16"/>
+                <TextBlock x:Name="textBlock5" HorizontalAlignment="Left" Margin="2,15,0,0" TextWrapping="Wrap" Text="이미지 저장 폴더" VerticalAlignment="Top" Grid.Row="1" Height="16"/>
+                <Button x:Name="button1" Content="폴더 선택" HorizontalAlignment="Left" Margin="10,11,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1" Grid.Row="1" Height="20" Click="buttonPath_Click"/>
+                <TextBlock x:Name="textPath" HorizontalAlignment="Left" Margin="90,13,0,0" TextWrapping="Wrap" Text="경로" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Height="16"/>
+                <TextBlock x:Name="textBlock7" HorizontalAlignment="Left" Margin="11,8,0,0" TextWrapping="Wrap" Text="뮤트, 단어 알림" VerticalAlignment="Top" Grid.Row="2" Height="16"/>
+                <Button x:Name="buttonMute" Content="설정" HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1" Grid.Row="2" Height="20" Click="buttonMute_Click"/>
+            </Grid>
+        </GroupBox>
+        <Button x:Name="buttonOk" Content="확인" HorizontalAlignment="Left" Margin="311,0,0,10" VerticalAlignment="Bottom" Width="75" Click="buttonOk_Click"/>
+        <Button x:Name="buttonCancle" Content="취소" HorizontalAlignment="Left" Margin="420,0,0,10" VerticalAlignment="Bottom" Width="75" Click="buttonCancle_Click"/>
+        <GroupBox Header="시작 옵션" HorizontalAlignment="Left" Margin="10,325,0,0" VerticalAlignment="Top" Height="136" Width="485">
+            <Grid HorizontalAlignment="Left" Height="121" VerticalAlignment="Top" Width="475" Margin="0,0,-2,-12">
+                <CheckBox x:Name="checkLoadBlock" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock><Run Text="프로그램 시작 시 차단 목록을 가져옵니다."/><LineBreak/>
+                            <Run Text="차단 수가 70,000을 넘을 경우 해제 권장."/><LineBreak/>
+                            <Run Text="(체크 해제 시 옵션 - 차단 목록 갱신으로 갱신해야 합니다.)"/>
+                        </TextBlock>
+                    </StackPanel>
+                </CheckBox>
+                <CheckBox x:Name="checkLoadFollwing" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock><Run Text="프로그램 시작 시 팔로잉 목록을 가져옵니다."/><LineBreak/>
+                            <Run Text="팔로잉이 3,000을 넘을 경우 해제 권장."/><LineBreak/>
+                            <Run Text="(체크 해제 시 옵션 - 팔로잉 목록 갱신으로 갱신해야 합니다.)"/>
+                        </TextBlock>
+                    </StackPanel>
+                </CheckBox>
+            </Grid>
+        </GroupBox>
+
+    </Grid>
+</Window>

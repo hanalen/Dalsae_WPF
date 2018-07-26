@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dalsae", "Dalsae\Dalsae.csproj", "{4DEABAAC-14B6-4225-A554-F011B1817743}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dalsae_Patch", "Dalsae_Patch\Dalsae_Patch.csproj", "{DC1E09D2-37A4-4EC5-B4A3-88AD0D6C0071}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4DEABAAC-14B6-4225-A554-F011B1817743}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DEABAAC-14B6-4225-A554-F011B1817743}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DEABAAC-14B6-4225-A554-F011B1817743}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DEABAAC-14B6-4225-A554-F011B1817743}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC1E09D2-37A4-4EC5-B4A3-88AD0D6C0071}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC1E09D2-37A4-4EC5-B4A3-88AD0D6C0071}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC1E09D2-37A4-4EC5-B4A3-88AD0D6C0071}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC1E09D2-37A4-4EC5-B4A3-88AD0D6C0071}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

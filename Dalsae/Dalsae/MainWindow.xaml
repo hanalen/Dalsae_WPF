@@ -1,0 +1,900 @@
+﻿<Window x:Class="Dalsae.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dalsae"
+        xmlns:window="clr-namespace:Dalsae.WindowAndControl"
+        xmlns:template="clr-namespace:Dalsae.Template"
+        mc:Ignorable="d"
+        AllowDrop="True"
+        Activated="mainWindow_Activated"
+        x:Name="mainWindow"
+        WindowStartupLocation="Manual"
+        PreviewKeyDown="mainWindow_PreviewKeyDown"
+        Title="Dalsae" Height="743.613" Width="533.722" MinWidth="200" MinHeight="200" Loaded="Dalsae_Loded" Drop="mainWindow_Drop" Closing="mainWindow_Closing" FontFamily="맑은 고딕" SizeChanged="mainWindow_SizeChanged" LocationChanged="mainWindow_LocationChanged">
+    <Window.Resources>
+        <!--ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ스타일ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ-->
+        <!--그림자 이펙트-->
+        <DropShadowEffect x:Key="shadowEffect" Direction="135" ShadowDepth="1" Opacity="0.2"  BlurRadius="20"/>
+        <!--토글 감추는 스타일(현재 안쓰임)-->
+        <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Visibility" Value="Collapsed"/>
+        </Style>
+        <!--대화 트리아이템 스타일-->
+        <Style TargetType="{x:Type TreeViewItem}" x:Key="styleTreeViewContainerDaehwa">
+            <Setter Property="IsExpanded" Value="True"/>
+            <Setter Property="Background" Value="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mentionOne, Mode=OneWay}"/>
+            <!--<Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                    <Setter Property="Background" 
+                        Value="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mentionOne, Mode=OneWay}">
+                    </Setter>
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Background" 
+                        Value="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mentionTwo, Mode=OneWay}">
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    --><!--마우스오버 시 색상--><!--
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                </Trigger>
+            </Style.Triggers>-->
+        </Style>
+
+        <!--트리뷰 아이템 스타일-->
+        <Style TargetType="{x:Type TreeViewItem}" x:Key="styleTreeViewContainer">
+            <Setter Property="IsExpanded" Value="True"/>
+            <Setter Property="Margin" Value="-20,0,0,0"/>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <template:MyVirtualizingStackPanel x:Name="virtual"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                    <Setter Property="Background" 
+                        Value="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.blockOne, Mode=OneWay}">
+                    </Setter>
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Background" 
+                        Value="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.blockTwo, Mode=OneWay}">
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <!--마우스오버 시 색상-->
+                    <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--ㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗ-->
+        <!--ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ이미지 미리보기ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ-->
+        <DataTemplate x:Key="imagePreviewOne">
+            <Grid Background="Transparent" Focusable="False" Margin="0,4,0,0"  MouseEnter="Image_MouseEnter" MouseLeave="Image_MouseLeave" MouseMove="Grid_MouseMove" VerticalAlignment="Top"
+                  Visibility="{Binding Source={StaticResource myOption}, Path=DataInstence.option.isShowPreview,
+                            Converter={StaticResource boolConverter}, Mode=OneWay}">
+                <Grid VerticalAlignment="Top">
+                    <Image x:Name="image1" Source="{Binding Converter={StaticResource imageConverter}, ConverterParameter=one, Mode=OneWay}" MaxWidth="100" MaxHeight="100"
+                               MouseUp="preview_MouseDown" Cursor="Hand">
+                        <Image.Clip>
+                            <RectangleGeometry RadiusX="12" RadiusY="12" Rect="0,0,100,100"/>
+                        </Image.Clip>
+                    </Image>
+                    <Image x:Name="imagePlay" Source="{Binding bitmapPlay, ElementName=mainWindow}" HorizontalAlignment="Left"  Margin="32,32,0,0" Grid.Row="1" VerticalAlignment="Top" OpacityMask="Black" Width="32" Height="32"
+                       Visibility="{Binding Path=isMovie, Converter={StaticResource boolConverter}, Mode=OneWay}" MouseUp="preview_MouseDown" Cursor="Hand"/>
+                </Grid>
+                <Grid Margin="6,4,0,0" VerticalAlignment="Top">
+                    <Image x:Name="image2" Source="{Binding Converter={StaticResource imageConverter}, ConverterParameter=two, Mode=OneWay}" MaxWidth="100" MaxHeight="100"
+                               MouseUp="preview_MouseDown" Cursor="Hand">
+                        <Image.Clip>
+                            <RectangleGeometry RadiusX="12" RadiusY="12" Rect="0,0,100,100"/>
+                        </Image.Clip>
+                    </Image>
+                </Grid>
+                <Grid Margin="12,8,0,0" VerticalAlignment="Top">
+                    <Image x:Name="image3" Source="{Binding Converter={StaticResource imageConverter}, ConverterParameter=three, Mode=OneWay}" MaxWidth="100" MaxHeight="100"
+                               MouseUp="preview_MouseDown" Cursor="Hand">
+                        <Image.Clip>
+                            <RectangleGeometry RadiusX="12" RadiusY="12" Rect="0,0,100,100"/>
+                        </Image.Clip>
+                    </Image>
+                </Grid>
+                <Grid Margin="18,12,0,0" VerticalAlignment="Top">
+                    <Image x:Name="image4" Source="{Binding Converter={StaticResource imageConverter}, ConverterParameter=four, Mode=OneWay}" MaxWidth="100" MaxHeight="100"
+                               MouseUp="preview_MouseDown" Cursor="Hand">
+                        <Image.Clip>
+                            <RectangleGeometry RadiusX="12" RadiusY="12" Rect="0,0,100,100"/>
+                        </Image.Clip>
+                    </Image>
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <!--인장 컨트롤-->
+        <ControlTemplate x:Key="imagePropic">
+            <Grid Visibility="{Binding Source={StaticResource myOption}, Path=DataInstence.option.isShowPropic,
+                            Converter={StaticResource boolConverter}, Mode=OneWay}" Focusable="False">
+                <Grid Width="60" Focusable="False" Visibility="{Binding Source={StaticResource myOption}, Converter={StaticResource convertPropic}, Path=DataInstence.option.isBigPropic, ConverterParameter=normal, Mode=OneWay}">
+                    <Image Focusable="False" HorizontalAlignment="Left" Height="48" Margin="4" Grid.RowSpan="2" 
+                           Visibility="{Binding Source={StaticResource myOption}, Converter={StaticResource convertPropic}, Path=DataInstence.option.isBigPropic, ConverterParameter=normal, Mode=OneWay}"
+                           VerticalAlignment="Top" Width="48" OpacityMask="Black" Grid.Column="1" Source="{Binding Converter={StaticResource convertPropic}, ConverterParameter=normal, Mode=OneWay}">
+                        <Image.Clip>
+                            <RectangleGeometry RadiusX="8" RadiusY="8" Rect="0,0,48,48"/>
+                        </Image.Clip>
+                    </Image>
+                </Grid>
+                <Grid Width="85" Focusable="False" Visibility="{Binding Source={StaticResource myOption}, Converter={StaticResource convertPropic}, Path=DataInstence.option.isBigPropic, ConverterParameter=big, Mode=OneWay}">
+                    <Image Focusable="False" HorizontalAlignment="Left" Height="73" Margin="4" Grid.RowSpan="2" 
+                           Visibility="{Binding Source={StaticResource myOption}, Converter={StaticResource convertPropic}, Path=DataInstence.option.isBigPropic, ConverterParameter=big, Mode=OneWay}"
+                           VerticalAlignment="Top" Width="73" OpacityMask="Black" Grid.Column="1" Source="{Binding Converter={StaticResource convertPropic}, ConverterParameter=big, Mode=OneWay}">
+                        <Image.Clip>
+                            <RectangleGeometry RadiusX="12" RadiusY="12" Rect="0,0,73,73"/>
+                        </Image.Clip>
+                    </Image>
+                </Grid>
+            </Grid>
+        </ControlTemplate>
+
+        <!--ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ기타ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ-->
+        <!--멘션 아이디 자동완성 템플릿-->
+        <DataTemplate x:Key="mentionId">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="image" Source="{Binding Path=profile_image_url}" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="20" OpacityMask="Black" Grid.Column="0"/>
+                <TextBlock Text="{Binding Path=screen_name}" Grid.Column="1" Margin="3,0,0,0"/>
+                <TextBlock Text="{Binding Path=name}" Grid.Column="2" Margin="3,0,0,0"/>
+            </Grid>
+        </DataTemplate>
+
+        <!--더 불러오기 버튼-->
+        <DataTemplate x:Key="moreButton">
+            <Grid>
+            <Button Height="50"
+                    Click="click_MoreButton"
+                    Width="{Binding Path=ActualWidth, ElementName=treeHome, Mode=OneWay}"
+                    HorizontalAlignment="Stretch"
+                    Content="더 불러오기" VerticalAlignment="Top"/>
+            </Grid>
+        </DataTemplate>
+        <!--ㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗ-->
+
+        <!--ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ대화&인용ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ-->
+
+        <HierarchicalDataTemplate x:Key="dhTweet2">
+            <Grid MouseLeftButtonDown="tweetGrid_MouseLeftDown" ContextMenu="{Binding Source={StaticResource contextMenu}}"
+                  ContextMenuOpening="contextOnOpening" Background="Transparent" x:Name="grid"
+                  PreviewMouseDown="tweetGrid_PreviewMouseDown">
+                <Grid.Width>
+                    <MultiBinding Converter="{StaticResource SumConverterInstance}">
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=ScrollContentPresenter, AncestorLevel=1}" Path="ActualWidth" />
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeViewItem, AncestorLevel=1}" Converter="{StaticResource ParentCountConverterInstance}" />
+                    </MultiBinding>
+                </Grid.Width>
+                <!--Width="{Binding ElementName=mainWindow, Path=notiWidth.Width}">-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto" MaxWidth="116"/>
+                </Grid.ColumnDefinitions>
+                <ContentControl Focusable="False" Template="{StaticResource imagePropic}" Grid.Column="1" Grid.RowSpan="3"/>
+                <Image Source="{Binding gongSikImage, ElementName=mainWindow}" HorizontalAlignment="Left"  Margin="34,34,4,4" Grid.RowSpan="3" VerticalAlignment="Top" OpacityMask="Black" Width="18" Height="18"  Grid.Column="1"
+                            Visibility="{Binding Path=originalTweet.user.verified, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="Auto" Height="auto"
+                           Text="↪" Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mention, Mode=OneWay}"
+                           Visibility="{Binding Path=isReply, Converter={StaticResource boolConverter}, Mode=OneWay}" Margin="0"/>
+                <TextBlock x:Name="labelName" FontWeight="Bold" Grid.Column="2" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="Auto" Height="auto"
+                           Text="{Binding Path=nameText, UpdateSourceTrigger=PropertyChanged}" 
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelTweet" Text="{Binding Path=originalTweet.text}" Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left"
+                           MaxHeight="300"
+                           FontWeight="{Binding Converter={StaticResource boolConverter}, Mode=OneWay}"
+                           TextDecorations="{Binding Path=uiProperty.isDeleteTweet, Converter={StaticResource boolConverter}, Mode=OneWay}"
+                           Foreground="{Binding Path=uiProperty.isHighlight, Converter={StaticResource fontColorConverter}, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelDate" Text="{Binding Path=originalTweet.dateString}" Grid.Column="2" Grid.Row="2" Height="auto" HorizontalAlignment="Left" Margin="0,0,0,2"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelHeart" Grid.Column="3" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="1" TextWrapping="Wrap" Text="♥" VerticalAlignment="Top"
+                           Foreground="Red"
+                           Visibility="{Binding Path=favorited, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <Image Source="{Binding lockImage, ElementName=mainWindow}" HorizontalAlignment="Left"  Margin="0" Grid.Row="1" VerticalAlignment="Top" OpacityMask="Black" Width="14" Height="14"  Grid.Column="3"
+                       Visibility="{Binding Path=originalTweet.user.Protected, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <TextBlock x:Name="textBlock" Grid.Column="3" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="2" TextWrapping="Wrap" Text="RT" VerticalAlignment="Top" Width="14"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.retweet, Mode=OneWay}"
+                           Visibility="{Binding Path=originalTweet.retweeted, Converter={StaticResource deahwaConverter}, Mode=OneWay}"/>
+                <ContentControl Focusable="False" Content="{Binding}" ContentTemplate="{StaticResource imagePreviewOne}"  Grid.RowSpan="3" Grid.Column="4"/>
+            </Grid>
+        </HierarchicalDataTemplate>
+
+        <!--대화로그용 트윗 템플릿, 리트윗은 사용x-->
+        <HierarchicalDataTemplate x:Key="dhTweet"
+                                  ItemsSource="{Binding Path=uiProperty.childNode}"
+                                  ItemTemplate="{StaticResource dhTweet2}"
+                                  ItemContainerStyle="{StaticResource styleTreeViewContainerDaehwa}">
+            <Grid MouseLeftButtonDown="tweetGrid_MouseLeftDown" ContextMenu="{Binding Source={StaticResource contextMenu}}"
+                  PreviewMouseDown="tweetGrid_PreviewMouseDown"        
+                  ContextMenuOpening="contextOnOpening" Background="Transparent" x:Name="grid">
+                <Grid.Width>
+                    <MultiBinding Converter="{StaticResource SumConverterInstance}">
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=ScrollContentPresenter, AncestorLevel=1}" Path="ActualWidth" />
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeViewItem, AncestorLevel=1}" Converter="{StaticResource ParentCountConverterInstance}" />
+                    </MultiBinding>
+                </Grid.Width>
+                <!--Width="{Binding ElementName=mainWindow, Path=notiWidth.Width}"-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto" MaxWidth="116"/>
+                </Grid.ColumnDefinitions>
+                <ContentControl Focusable="False" Template="{StaticResource imagePropic}" Grid.Column="1" Grid.RowSpan="3"/>
+                <Image Source="{Binding gongSikImage, ElementName=mainWindow}" HorizontalAlignment="Left"  Margin="34,34,4,4" Grid.RowSpan="3" VerticalAlignment="Top" OpacityMask="Black" Width="18" Height="18"  Grid.Column="1"
+                            Visibility="{Binding Path=originalTweet.user.verified, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="Auto" Height="auto"
+                           Text="↪" Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mention, Mode=OneWay}"
+                           Visibility="{Binding Path=isReply, Converter={StaticResource boolConverter}, Mode=OneWay}" Margin="0"/>
+                <TextBlock x:Name="labelName" FontWeight="Bold" Grid.Column="2" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="Auto" Height="auto"
+                           Text="{Binding Path=nameText, UpdateSourceTrigger=PropertyChanged}" 
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelTweet" Text="{Binding Path=originalTweet.text}" Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left"
+                           MaxHeight="300"
+                           FontWeight="{Binding Converter={StaticResource boolConverter}, Mode=OneWay}"
+                           TextDecorations="{Binding Path=uiProperty.isDeleteTweet, Converter={StaticResource boolConverter}, Mode=OneWay}"
+                           Foreground="{Binding Path=uiProperty.isHighlight, Converter={StaticResource fontColorConverter}, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelDate" Text="{Binding Path=originalTweet.dateString}" Grid.Column="2" Grid.Row="2" Height="auto" HorizontalAlignment="Left" Margin="0,0,0,2"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelHeart" Grid.Column="3" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="1" TextWrapping="Wrap" Text="♥" VerticalAlignment="Top"
+                           Foreground="Red"
+                           Visibility="{Binding Path=favorited, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <Image Source="{Binding lockImage, ElementName=mainWindow}" HorizontalAlignment="Left"  Margin="0" Grid.Row="1" VerticalAlignment="Top" OpacityMask="Black" Width="14" Height="14"  Grid.Column="3"
+                       Visibility="{Binding Path=originalTweet.user.Protected, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <TextBlock x:Name="textBlock" Grid.Column="3" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="2" TextWrapping="Wrap" Text="RT" VerticalAlignment="Top" Width="14"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.retweet, Mode=OneWay}"
+                           Visibility="{Binding Path=originalTweet.retweeted, Converter={StaticResource deahwaConverter}, Mode=OneWay}"/>
+                <ContentControl Focusable="False" Content="{Binding}" ContentTemplate="{StaticResource imagePreviewOne}"  Grid.RowSpan="3" Grid.Column="4"/>
+            </Grid>
+        </HierarchicalDataTemplate>
+        <!--================================================-->
+
+
+        <!--ㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ일반&DMㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜㅜ-->
+        <!--일반 트윗 템플릿-->
+        <HierarchicalDataTemplate x:Key="tweetControl"
+                        ItemsSource="{Binding Path=uiProperty.childNode}" 
+                        ItemTemplate="{StaticResource dhTweet}"
+                                  ItemContainerStyle="{StaticResource styleTreeViewContainerDaehwa}">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" ContextMenu="{Binding Source={StaticResource contextMenu}}"
+                   MouseLeftButtonDown="tweetGrid_MouseLeftDown"          
+                  Background="Transparent" ContextMenuOpening="contextOnOpening" x:Name="grid" PreviewMouseDown="tweetGrid_PreviewMouseDown">
+                <Grid.Width>
+                    <MultiBinding Converter="{StaticResource SumConverterInstance}">
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=ScrollContentPresenter, AncestorLevel=1}" Path="ActualWidth" />
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeViewItem, AncestorLevel=1}" Converter="{StaticResource ParentCountConverterInstance}" />
+                    </MultiBinding>
+                </Grid.Width>
+                <!--Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ScrollContentPresenter, AncestorLevel=1}, Path=ActualWidth}">-->
+                <!--Width="{Binding ElementName=mainWindow, Path=notiWidth.Width}">-->
+                <!--Width="{Binding Mode=OneWay, RelativeSource={RelativeSource AncestorType=ScrollContentPresenter, AncestorLevel=1}, Path=ViewportWidth}">-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto" MaxWidth="116"/>
+                </Grid.ColumnDefinitions>
+                <ContentControl Focusable="False" Template="{StaticResource imagePropic}" Grid.Column="1" Grid.RowSpan="3"/>
+                <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="Auto" Height="auto"
+                                Text="↪" Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mention, Mode=OneWay}"
+                                Visibility="{Binding Path=isReply, Converter={StaticResource boolConverter}, Mode=OneWay}" Margin="0"/>
+                <Image Source="{Binding gongSikImage, ElementName=mainWindow}" HorizontalAlignment="Left"  Margin="34,34,4,4" Grid.RowSpan="3" VerticalAlignment="Top" OpacityMask="Black" Width="18" Height="18"  Grid.Column="1"
+                                Visibility="{Binding Path=originalTweet.user.verified, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <TextBlock x:Name="labelName" FontWeight="Bold" Grid.Column="2" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="Auto" Height="auto"
+                           Text="{Binding Path=nameText, UpdateSourceTrigger=PropertyChanged}" 
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelTweet" Text="{Binding Path=originalTweet.text}" Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left"
+                           Margin="0,2,0,4" MaxHeight="300"
+                           FontWeight="{Binding Converter={StaticResource boolConverter}, Mode=OneWay}"
+                           TextDecorations="{Binding Path=uiProperty.isDeleteTweet, Converter={StaticResource boolConverter}, Mode=OneWay}"
+                           Foreground="{Binding Path=uiProperty.isHighlight, Converter={StaticResource fontColorConverter}, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelDate" Text="{Binding Path=originalTweet.dateString}" Grid.Column="2" Grid.Row="2" Height="auto" HorizontalAlignment="Left" Margin="0,0,0,2"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}" VerticalAlignment="Top"/>
+                <TextBlock x:Name="labelHeart" Grid.Column="3" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="1" TextWrapping="Wrap" Text="♥" VerticalAlignment="Top"
+                           Foreground="Red"
+                           Visibility="{Binding Path=favorited, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <Image Source="{Binding lockImage, ElementName=mainWindow}" HorizontalAlignment="Left"  Margin="0" Grid.Row="1" VerticalAlignment="Top" OpacityMask="Black" Width="14" Height="14"  Grid.Column="3"
+                       Visibility="{Binding Path=originalTweet.user.Protected, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <TextBlock x:Name="textBlock" Grid.Column="3" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="2" TextWrapping="Wrap" Text="RT" VerticalAlignment="Top" Width="14"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.retweet, Mode=OneWay}"
+                           Visibility="{Binding Path=originalTweet.retweeted, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <ContentControl Focusable="False" Content="{Binding}" ContentTemplate="{StaticResource imagePreviewOne}"  Grid.RowSpan="3" Grid.Column="4"/>
+            </Grid>
+        </HierarchicalDataTemplate>
+        <!--================================================-->
+        <!--리트윗 템플릿-->
+        <HierarchicalDataTemplate x:Key="retweetControl"
+                        ItemsSource="{Binding Path=uiProperty.childNode}" 
+                        ItemTemplate="{StaticResource dhTweet}"
+                        ItemContainerStyle="{StaticResource styleTreeViewContainerDaehwa}">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Top" ContextMenu="{Binding Source={StaticResource contextMenu}}"
+                   MouseLeftButtonDown="tweetGrid_MouseLeftDown"     
+                  PreviewMouseDown="tweetGrid_PreviewMouseDown"
+                  Background="Transparent" ContextMenuOpening="contextOnOpening" x:Name="grid">
+                <Grid.Width>
+                    <MultiBinding Converter="{StaticResource SumConverterInstance}">
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=ScrollContentPresenter, AncestorLevel=1}" Path="ActualWidth" />
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeViewItem, AncestorLevel=1}" Converter="{StaticResource ParentCountConverterInstance}" />
+                    </MultiBinding>
+                </Grid.Width>
+                <!--Width="{Binding ElementName=mainWindow, Path=notiWidth.Width}">-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="auto" MaxWidth="116"/>
+                </Grid.ColumnDefinitions>
+                <ContentControl Focusable="False" Template="{StaticResource imagePropic}" Grid.Column="1" Grid.RowSpan="3"/>
+                <TextBlock FontWeight="Bold" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="Auto" Height="auto"
+                           Text="↪" Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mention, Mode=OneWay}"
+                           Visibility="{Binding Path=isReply, Converter={StaticResource boolConverter}, Mode=OneWay}" Margin="0"/>
+                <Image Source="{Binding gongSikImage, ElementName=mainWindow}" HorizontalAlignment="Left"  Margin="34,34,4,4" Grid.RowSpan="3" VerticalAlignment="Top" OpacityMask="Black" Width="18" Height="18" Grid.Column="1"
+                       Visibility="{Binding Path=originalTweet.user.verified, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <TextBlock x:Name="labelName"  Grid.Column="2" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" Height="auto"
+                           Text="{Binding Path=originalTweet.nameText}"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelTweet" Text="{Binding Path=originalTweet.text}" Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left"
+                           FontWeight="{Binding Converter={StaticResource boolConverter}, Mode=OneWay}"
+                           MaxHeight="300" Margin="0,2,0,4"
+                           TextDecorations="{Binding Path=uiProperty.isDeleteTweet, Converter={StaticResource boolConverter}, Mode=OneWay}"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.retweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <Image x:Name="retweetPic" Grid.Column="2" HorizontalAlignment="Left" Height="24" Margin="1" Grid.Row="2" VerticalAlignment="Top" Width="24" OpacityMask="Black"
+                       Visibility="{Binding Source={StaticResource myOption}, Path=DataInstence.option.isShowPropic,
+                       Converter={StaticResource boolConverter}, Mode=OneWay}"
+                       Source="{Binding Path=user.profile_image_url}">
+                    <Image.Clip>
+                        <RectangleGeometry RadiusX="3" RadiusY="3" Rect="0,0,48,48"/>
+                    </Image.Clip>
+                </Image>
+                <TextBlock x:Name="labelRetweet" Text="{Binding Path=retweetText}" Grid.Column="2" Grid.Row="2" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30,0,0,0"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelDate" Text="{Binding Path=originalTweet.dateString}" Grid.Column="2" Grid.Row="3" Height="auto" HorizontalAlignment="Left" Margin="0,0,0,2"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}" VerticalAlignment="Top"/>
+                <TextBlock x:Name="labelHeart" Grid.Column="3" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="1" TextWrapping="Wrap" Text="♥" VerticalAlignment="Top"
+                           Foreground="Red"
+                           Visibility="{Binding Path=originalTweet.favorited, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <Image Source="{Binding lockImage, ElementName=mainWindow}" HorizontalAlignment="Left"  Margin="0" Grid.Row="1" VerticalAlignment="Top" OpacityMask="Black" Width="14" Height="14"  Grid.Column="3"
+                       Visibility="{Binding Path=originalTweet.user.Protected, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <TextBlock x:Name="textBlock" Grid.Column="3" HorizontalAlignment="Left" Margin="4,0,0,0" Grid.Row="2" TextWrapping="Wrap" Text="RT" VerticalAlignment="Top" Width="14"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.retweet, Mode=OneWay}"
+                           Visibility="{Binding Path=originalTweet.retweeted, Converter={StaticResource boolConverter}, Mode=OneWay}"/>
+                <ContentControl Focusable="False" Content="{Binding}" ContentTemplate="{StaticResource imagePreviewOne}" Grid.Row="0" Grid.Column="4" Grid.RowSpan="4"/>
+            </Grid>
+        </HierarchicalDataTemplate>
+        <!--================================================-->
+        <!--dm템플릿-->
+        <DataTemplate x:Key="dmControl">
+            <Grid HorizontalAlignment="Stretch" Height="auto" VerticalAlignment="Top" x:Name="grid"
+                ContextMenu="{Binding Source={StaticResource contextMenu}}"
+                PreviewMouseDown="dmGrid_PreviewMouseDown"
+                ContextMenuOpening="dmcontextOnOpening" Background="Transparent">
+                <Grid.Width>
+                    <MultiBinding Converter="{StaticResource SumConverterInstance}">
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=ScrollContentPresenter, AncestorLevel=1}" Path="ActualWidth" />
+                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType=TreeViewItem, AncestorLevel=1}" Converter="{StaticResource ParentCountConverterInstance}" />
+                    </MultiBinding>
+                </Grid.Width>
+                <!--Width="{Binding ElementName=mainWindow, Path=notiWidth.Width}">-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="1" Grid.RowSpan="2" Width="60"
+                    Visibility="{Binding Source={StaticResource myOption}, Path=DataInstence.option.isShowPropic,
+                    Converter={StaticResource boolConverter}, Mode=OneWay}">
+                    <Image x:Name="image" HorizontalAlignment="Left" Height="48" Margin="4" Grid.RowSpan="2" VerticalAlignment="Top" Width="48" OpacityMask="Black" Grid.Column="1"
+                       Source="{Binding Path=sender.profile_image_url}">
+                        <Image.Clip>
+                            <RectangleGeometry RadiusX="8" RadiusY="8" Rect="0,0,48,48"/>
+                        </Image.Clip>
+                    </Image>
+                </Grid>
+                <TextBlock x:Name="labelName" FontWeight="Bold" Grid.Column="2" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="Auto" Height="auto"
+                           Text="{Binding Path=nameText}" 
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelTweet" Text="{Binding Path=text}" Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left" MaxHeight="300"
+                           FontWeight="{Binding Converter={StaticResource boolConverter}, Mode=OneWay}"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+                <TextBlock x:Name="labelDate" Text="{Binding Path=dateString}" Grid.Column="2" Grid.Row="2" Height="auto" HorizontalAlignment="Left" Margin="0,0,0,2"
+                           Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.tweet, Mode=OneWay}"
+                           FontFamily="{Binding Source={StaticResource myOption}, Path=DataInstence.option.font, Mode=OneWay}"
+                           FontSize="{Binding Source={StaticResource myOption}, Path=DataInstence.option.fontSize, Mode=OneWay}"/>
+            </Grid>
+        </DataTemplate>
+        <!--ㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗㅗ-->
+
+    </Window.Resources>
+    <Grid Background="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.defaultColor, Mode=OneWay}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" x:Name="topUIRow"/>
+            <RowDefinition/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TreeView x:Name="treeHome"
+                 ItemContainerStyle="{StaticResource styleTreeViewContainer}"
+                 AlternationCount="2"
+                 Panel.ZIndex="3"
+                 VirtualizingStackPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling"
+                 ScrollViewer.CanContentScroll="True"
+                 ItemsSource="{Binding}"
+                 Padding="0"
+                 Grid.Row="3"
+                 GotFocus="treeView_GotFocus"
+                 Visibility="Visible"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  PreviewMouseRightButtonDown="treeUser_PreviewMouseRightButtonDown"
+                 PreviewKeyDown="treeView_PreviewKeyDown"
+                 ItemTemplateSelector="{StaticResource myTweetTemplateSelector}"
+                 Background="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.defaultColor, Mode=OneWay}">
+            <TreeView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <template:MyVirtualizingStackPanel/>
+                </ItemsPanelTemplate>
+            </TreeView.ItemsPanel>
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#5A3399fe" />
+                <!--선택색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#5Acbd9f6" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#5Ae8e5be" />
+                <!--선택햇다 포커스 잃은 색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#5Abdaddb" />
+                <SolidColorBrush x:Key="hoverBrush" Opacity=".05" 
+             Color="{DynamicResource {x:Static SystemColors.HotTrackColorKey}}"/>
+            </TreeView.Resources>
+        </TreeView>
+        <TreeView x:Name="treeMention"
+                 ItemContainerStyle="{StaticResource styleTreeViewContainer}"
+                 AlternationCount="2"
+                 VirtualizingStackPanel.IsVirtualizing="True"
+                 VirtualizingPanel.VirtualizationMode="Recycling"
+                 ScrollViewer.CanContentScroll="True"
+                 ItemsSource="{Binding}"
+                 Padding="0"
+                 Grid.Row="3"
+                 Visibility="Visible"
+                 GotFocus="treeView_GotFocus"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 PreviewKeyDown="treeView_PreviewKeyDown"
+                 ItemTemplateSelector="{StaticResource myTweetTemplateSelector}"
+                 Background="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.defaultColor, Mode=OneWay}">
+            <TreeView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <template:MyVirtualizingStackPanel/>
+                </ItemsPanelTemplate>
+            </TreeView.ItemsPanel>
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#5A3399fe" />
+                <!--선택색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#5Acbd9f6" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#5Ae8e5be" />
+                <!--선택햇다 포커스 잃은 색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#5Abdaddb" />
+                <SolidColorBrush x:Key="hoverBrush" Opacity=".05" 
+             Color="{DynamicResource {x:Static SystemColors.HotTrackColorKey}}"/>
+            </TreeView.Resources>
+        </TreeView>
+        <TreeView x:Name="treeDM"
+                 ItemContainerStyle="{StaticResource styleTreeViewContainer}"
+                 AlternationCount="2"
+                 VirtualizingStackPanel.IsVirtualizing="False"
+                 ScrollViewer.CanContentScroll="True"
+                 ItemsSource="{Binding}"
+                 Padding="0"
+                 Grid.Row="3"
+                 Visibility="Visible"
+                 GotFocus="treeView_GotFocus"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 PreviewKeyDown="treeViewDM_PreviewKeyDown"
+                 ItemTemplate="{StaticResource dmControl}"
+                 Background="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.defaultColor, Mode=OneWay}">
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#5A3399fe" />
+                <!--선택색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#5Acbd9f6" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#5Ae8e5be" />
+                <!--선택햇다 포커스 잃은 색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#5Abdaddb" />
+            </TreeView.Resources>
+        </TreeView>
+        <TreeView x:Name="treeFav"
+                 ItemContainerStyle="{StaticResource styleTreeViewContainer}"
+                 AlternationCount="2"
+                 VirtualizingStackPanel.IsVirtualizing="False"
+                 ScrollViewer.CanContentScroll="True"
+                 ItemsSource="{Binding}"
+                 Padding="0"
+                 Grid.Row="3"
+                 Visibility="Visible"
+                 GotFocus="treeView_GotFocus"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 PreviewKeyDown="treeView_PreviewKeyDown"
+                 ItemTemplateSelector="{StaticResource myTweetTemplateSelector}"
+                 Background="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.defaultColor, Mode=OneWay}">
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#5A3399fe" />
+                <!--선택색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#5Acbd9f6" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#5Ae8e5be" />
+                <!--선택햇다 포커스 잃은 색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#5Abdaddb" />
+            </TreeView.Resources>
+        </TreeView>
+        <TreeView x:Name="treeUser"
+                 ItemContainerStyle="{StaticResource styleTreeViewContainer}"
+                 AlternationCount="2"
+                 VirtualizingStackPanel.IsVirtualizing="False"
+                 ScrollViewer.CanContentScroll="True"
+                 ItemsSource="{Binding}"
+                 Padding="0"
+                 Grid.Row="3"
+                 Visibility="Visible"
+                 GotFocus="treeView_GotFocus"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 PreviewKeyDown="treeView_PreviewKeyDown"
+                  
+                 ItemTemplateSelector="{StaticResource myTweetTemplateSelector}"
+                 Background="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.defaultColor, Mode=OneWay}">
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#5A3399fe" />
+                <!--선택색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#5Acbd9f6" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#5Ae8e5be" />
+                <!--선택햇다 포커스 잃은 색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#5Abdaddb" />
+            </TreeView.Resources>
+        </TreeView>
+        <TreeView x:Name="treeOpen"
+                 ItemContainerStyle="{StaticResource styleTreeViewContainer}"
+                 AlternationCount="2"
+                 VirtualizingStackPanel.IsVirtualizing="False"
+                 ScrollViewer.CanContentScroll="True"
+                 ItemsSource="{Binding}"
+                 Padding="0"
+                 Grid.Row="3"
+                 Visibility="Visible"
+                 GotFocus="treeView_GotFocus"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 PreviewKeyDown="treeView_PreviewKeyDown"
+                 ItemTemplateSelector="{StaticResource myTweetTemplateSelector}"
+                 Background="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.defaultColor, Mode=OneWay}">
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#5A3399fe" />
+                <!--선택색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#5Acbd9f6" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#5Ae8e5be" />
+                <!--선택햇다 포커스 잃은 색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#5Abdaddb" />
+            </TreeView.Resources>
+        </TreeView>
+        <TreeView x:Name="treeUserMedia"
+                 ItemContainerStyle="{StaticResource styleTreeViewContainer}"
+                 AlternationCount="2"
+                 VirtualizingStackPanel.IsVirtualizing="False"
+                 ScrollViewer.CanContentScroll="True"
+                 ItemsSource="{Binding}"
+                 Padding="0"
+                 Grid.Row="3"
+                 Visibility="Visible"
+                 GotFocus="treeView_GotFocus"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 PreviewKeyDown="treeView_PreviewKeyDown"
+                 ItemTemplateSelector="{StaticResource myTweetTemplateSelector}"
+                 Background="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.defaultColor, Mode=OneWay}">
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#5A3399fe" />
+                <!--선택색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#5Acbd9f6" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#5Ae8e5be" />
+                <!--선택햇다 포커스 잃은 색-->
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="#5Abdaddb" />
+            </TreeView.Resources>
+        </TreeView>
+
+        <!--grid.row0, 메뉴바-->
+        <Menu Grid.Row="0" Background="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.topbar, Mode=OneWay}" FontSize="14">
+            <MenuItem Header="업로드">
+                <MenuItem Header="이미지 추가" Click="imageAdd_Click" />
+                <MenuItem Header="GIF 추가" Click="gifAdd_Click"/>
+            </MenuItem>
+            <MenuItem Header="보기">
+                <MenuItem Header="홈" Click="showPanel_Click"/>
+                <MenuItem Header="알림" Click="showPanel_Click"/>
+                <MenuItem Header="쪽지" Click="showPanel_Click"/>
+                <MenuItem Header="관심글" Click="showPanel_Click"/>
+                <MenuItem Header="최근 연 링크" Click="showPanel_Click"/>
+                <Separator />
+                <MenuItem Header="팔로잉" Click="following_Click"/>
+                <MenuItem Header="팔로워" Click="follower_Click"/>
+                <Separator />
+                <MenuItem Header="유저 검색" Click="searchUser_Click"/>
+                <Separator/>
+                <MenuItem Header="관심글 저장 도구" Click="favTool_Click"/>
+            </MenuItem>
+            <MenuItem Header="옵션">
+
+                <MenuItem Header="프로그램 설정" Click="click_Option"/>
+                <MenuItem Header="단축키 설정"  Click="click_Hotkey"/>
+                <Separator />
+                <MenuItem Header="팔로잉 목록 갱신" Click="menuItemFollow_Click"/>
+                <MenuItem Header="차단 목록 갱신" Click="menuItemBlock_Click"/>
+                <Separator />
+                <MenuItem x:Name="menuItemAccount" Header="계정 선택">
+                    <MenuItem Header="계정 추가" Click="menuItemAddAccount_Click"/>
+                    <MenuItem Header="현재 계정 삭제" Click="menuItemDeleteAccount_Click"/>
+                    <Separator/>
+                </MenuItem>
+                <!--<Separator />-->
+                <!--<MenuItem Header="유저 스트리밍 연결"/>-->
+            </MenuItem>
+            <MenuItem Header="프로그램 정보">
+                <MenuItem Header="도움말"  Click="help_Click"/>
+                <MenuItem Header="만든 사람" Click="made_Click"/>
+            </MenuItem>
+        </Menu>
+        <Grid Panel.ZIndex="10" x:Name="gridBigPreview" Grid.RowSpan="5" Background="#CC000000" Visibility="Collapsed"
+                MouseDown="previewImage_MouseDown">
+            <Image x:Name="previewImage" HorizontalAlignment="Center" VerticalAlignment="Center"
+                MaxHeight="{Binding Path=Height, ElementName=treeHome, Mode=OneWay}" Margin="0"
+                MaxWidth="{Binding ElementName=mainWindow, Path=notiWidth.Width}"/>
+        </Grid>
+        <Grid Grid.Row="2"><!--상단 영역 그리드-->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0"><!--인장/알림 영역 그리드-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid x:Name="gridProfilePicture" Focusable="False"
+                            Margin="4" Grid.Row="0" VerticalAlignment="Top" OpacityMask="Black" HorizontalAlignment="Left">
+                    <Grid Focusable="False" 
+                        Visibility="{Binding Source={StaticResource myOption}, Converter={StaticResource convertPropic}, 
+                        Path=DataInstence.option.isBigPropic, ConverterParameter=normal, Mode=OneWay}">
+                        <Image Focusable="False" HorizontalAlignment="Left" Width="48" Height="48"
+                            VerticalAlignment="Top" OpacityMask="Black"   
+                            Visibility="{Binding Source={StaticResource myOption}, Converter={StaticResource convertPropic}, 
+                            Path=DataInstence.option.isBigPropic, ConverterParameter=normal, Mode=OneWay}"
+                            Source="{Binding Converter={StaticResource convertPropic}, 
+                            Path=profile_image_url,
+                            ConverterParameter=big, Mode=OneWay}">
+                            <Image.Clip>
+                                <RectangleGeometry RadiusX="8" RadiusY="8" Rect="0,0,48,48"/>
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
+                    <Grid Focusable="False"
+                        Visibility="{Binding Source={StaticResource myOption}, Converter={StaticResource convertPropic}, 
+                        Path=DataInstence.option.isBigPropic, ConverterParameter=big, Mode=OneWay}">
+                        <Image Focusable="False" HorizontalAlignment="Left" Width="73" Height="73" Margin="0"
+                            VerticalAlignment="Top" OpacityMask="Black"   
+                            Visibility="{Binding Source={StaticResource myOption}, Converter={StaticResource convertPropic}, 
+                            Path=DataInstence.option.isBigPropic, ConverterParameter=big, Mode=OneWay}"
+                            Source="{Binding Converter={StaticResource convertPropic}, 
+                            Path=profile_image_url,
+                            ConverterParameter=big, Mode=OneWay}">
+                            <Image.Clip>
+                                <RectangleGeometry RadiusX="12" RadiusY="12" Rect="0,0,73,73"/>
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="1" VerticalAlignment="Top">
+                    <TextBlock x:Name="labelMentionNoti" Margin="0,2,0,0" Text="새 알림"
+                        Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.menuColor, Mode=OneWay}"
+                        Visibility="{Binding Path=notiMention.isOn, ElementName=mainWindow, 
+                        Converter={StaticResource boolConverter}, Mode=OneWay}" Height="16" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                    <TextBlock x:Name="labelDmNoti" Margin="0,20,0,2" Text="새 쪽지"
+                        Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.menuColor, Mode=OneWay}"
+                        Visibility="{Binding Path=notiDm.isOn, ElementName=mainWindow, 
+                        Converter={StaticResource boolConverter}, Mode=OneWay}" Height="16" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                </Grid>
+            </Grid>
+            <!--좌측 인장/알림 영역 그리드-->
+
+            <Grid Grid.Column="1"><!--우측 그리드-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <!--입력 박스 그리드-->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <TextBox x:Name="inputTweetBox" Margin="2" TextWrapping="Wrap" AllowDrop="True"
+                                    TextChanged="textBox_TextChanged" AcceptsReturn="True" PreviewKeyDown="textBox_PreviewKeyDown"
+                                    SelectionChanged="inputTweet_SelectionChanged" Height="60" VerticalAlignment="Top" Drop="inputTweetBox_Drop" PreviewDragOver="inputTweetBox_PreviewDragOver" PreviewDragEnter="inputTweetBox_PreviewDragEnter" PreviewDrop="inputTweetBox_PreviewDrop"/>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <TextBlock x:Name="labelCount2" HorizontalAlignment="Right" Margin="0,2,2,0" TextWrapping="Wrap" Text="(0/280)" VerticalAlignment="Center"
+                   Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.menuColor, Mode=OneWay}" Height="16"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Button x:Name="button" Content="트윗하기" Margin="0,4,4,4" Grid.Row="2" VerticalAlignment="Top" Width="75" HorizontalAlignment="Right" Click="button_Click" Height="20" Grid.Column="1"/>
+                    <TextBlock x:Name="labelCount" HorizontalAlignment="Right" Margin="0,6,84,0" TextWrapping="Wrap" Text="(0/280)" VerticalAlignment="Top"
+                   Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.menuColor, Mode=OneWay}" Height="16"/>
+                    <Grid x:Name="imageGrid" Margin="4,2,0,2" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Image x:Name="image0" Grid.Column="0" Width="30" Height="30" MouseDown="imageGrid_MouseDown"/>
+                        <Image x:Name="image1" Grid.Column="1" Width="30" Height="30" MouseDown="imageGrid_MouseDown"/>
+                        <Image x:Name="image2" Grid.Column="2" Width="30" Height="30" MouseDown="imageGrid_MouseDown"/>
+                        <Image x:Name="image3" Grid.Column="3" Width="30" Height="30" MouseDown="imageGrid_MouseDown"/>
+                    </Grid>
+                    <Grid x:Name="gridFind" HorizontalAlignment="Right" Height="24" Margin="0,4,140,0" VerticalAlignment="Top" Background="{DynamicResource {x:Static SystemColors.ScrollBarBrushKey}}" Width="116">
+                        <TextBox x:Name="textBoxFind" HorizontalAlignment="Left" Height="22" TextWrapping="Wrap" Text="찾기" VerticalAlignment="Top" Width="88" Margin="1,1,0,1" TextChanged="textBoxFind_TextChanged" PreviewKeyDown="textBoxFind_PreviewKeyDown"/>
+                        <Label x:Name="labelClose" Content="X" HorizontalAlignment="Left" Margin="94,-1,0,0" VerticalAlignment="Top" FontWeight="Bold" MouseDown="labelClose_MouseDown"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <!--우측그리드 종료-->
+        </Grid><!--상단영역 그리드-->
+        <ListBox x:Name="listBoxIds" Width="auto" HorizontalAlignment="Left" Height="100" Margin="83,64,0,0" Grid.Row="2" Grid.RowSpan="2" VerticalAlignment="Top" Panel.ZIndex="5"
+                 ItemTemplate="{StaticResource mentionId}" Visibility="{Binding Path=isShowMentionIds.isOn, ElementName=mainWindow, Converter={StaticResource boolConverter}, Mode=OneWay}" MouseDoubleClick="listBoxMentionIds_DoubleClick"/>
+
+
+        <Grid x:Name="bottomGrid" Grid.Row="4" Width="auto" HorizontalAlignment="Left" MouseDown="bottomGrid_MouseDown">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" MouseLeftButtonDown="bottomGrid_MouseDown" x:Name="bottomHome"/>
+                <ColumnDefinition Width="auto" MouseLeftButtonDown="bottomGrid_MouseDown" x:Name="bottomMention"/>
+                <ColumnDefinition Width="auto" MouseLeftButtonDown="bottomGrid_MouseDown" x:Name="bottomDM"/>
+                <ColumnDefinition Width="auto" MouseLeftButtonDown="bottomGrid_MouseDown" x:Name="bottomFav"/>
+                <ColumnDefinition Width="auto" MouseLeftButtonDown="bottomGrid_MouseDown" x:Name="bottomOpen"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" x:Name="imageHome" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="24" Margin="0,3,0,0" Cursor="Hand"/>
+            <TextBlock Grid.Column="0" Margin="26,0,0,0" Text="홈" x:Name="bottomLabelHome"
+                 Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mention, Mode=OneWay}" VerticalAlignment="Center" Cursor="Hand"/>
+            <Image Grid.Column="1" x:Name="imageMention" HorizontalAlignment="Left" Height="24" Grid.Row="3" VerticalAlignment="Top" Width="24" Margin="6,3,0,0" Cursor="Hand"/>
+            <TextBlock Grid.Column="1" Margin="32,0,0,0" Text="알림" x:Name="bottomLabelMention"
+                 Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mention, Mode=OneWay}" VerticalAlignment="Center" Cursor="Hand"/>
+            <Image Grid.Column="2" x:Name="imageDm" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="24" Margin="6,3,0,0" Cursor="Hand"/>
+            <TextBlock Grid.Column="2" Margin="32,0,0,0" Text="쪽지" x:Name="bottomLabelDM"
+                 Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mention, Mode=OneWay}" VerticalAlignment="Center" Cursor="Hand"/>
+            <Image Grid.Column="3" x:Name="imageFav" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="24" Margin="6,3,0,0" Cursor="Hand"/>
+            <TextBlock Grid.Column="3" Margin="32,0,0,0" Text="관심글" x:Name="bottomLabelFav"
+                 Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mention, Mode=OneWay}" VerticalAlignment="Center" Cursor="Hand"/>
+            <Image Grid.Column="4" x:Name="imageOpen" HorizontalAlignment="Left" Height="24" VerticalAlignment="Top" Width="24" Margin="6,3,0,0" Cursor="Hand"/>
+            <TextBlock Grid.Column="4" Margin="32,0,0,0" Text="최근 연 링크" x:Name="bottomLabelOpen"
+                 Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mention, Mode=OneWay}" VerticalAlignment="Center" Cursor="Hand"/>
+        </Grid>
+        <StatusBar x:Name="statusBar" Grid.Row="5" Height="20">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem x:Name="statusStream" Content="스트리밍 연결 되지 않음"/>
+            <Separator  Grid.Column="1"/>
+            <StatusBarItem x:Name="statusBlock" Content="차단 목록 가져오는 중" Grid.Column="2"/>
+            <Separator x:Name="sepaBlock" Grid.Column="3"/>
+            <StatusBarItem x:Name="statusFollow" Content="팔로잉 목록 가져오는 중" Grid.Column="4"/>
+            <Separator x:Name="sepaFollow" Grid.Column="5"/>
+            <StatusBarItem x:Name="statusRetweet" Content="리트윗 끈 목록 가져오는 중" Grid.Column="6"/>
+            <Separator x:Name="sepaRetweet" Grid.Column="7"/>
+        </StatusBar>
+        <Grid x:Name="messageGrid" Grid.Row="1" Visibility="{Binding Path=messageQueue.isShowMessage, ElementName=mainWindow, Converter={StaticResource boolConverter}, Mode=OneWay}" Margin="0,2">
+            <TextBlock x:Name="messageLabel" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0" FontSize="14"
+                Foreground="{Binding Source={StaticResource myOption}, Path=DataInstence.skin.mention, Mode=OneWay}"
+                Text="{Binding Path=messageQueue.message, ElementName=mainWindow, Mode=OneWay}"/>
+        </Grid>
+
+        <Grid x:Name="gridPreview" Panel.ZIndex="5" HorizontalAlignment="Right" Height="110" Margin="70,90,0,0" Grid.Row="3" VerticalAlignment="Top" Width="425" Background="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+            <Image x:Name="imagePreview1" HorizontalAlignment="Right" Height="100" VerticalAlignment="Top" Width="100" Margin="0,5,5,0" MaxWidth="100" MaxHeight="100"/>
+            <Image x:Name="imagePreview2" HorizontalAlignment="Right" Height="100" VerticalAlignment="Top" Width="100" Margin="0,5,110,0" MaxWidth="100" MaxHeight="100"/>
+            <Image x:Name="imagePreview3" HorizontalAlignment="Right" Height="100" VerticalAlignment="Top" Width="100" Margin="0,5,215,0" MaxWidth="100" MaxHeight="100"/>
+            <Image x:Name="imagePreview4" HorizontalAlignment="Right" Height="100" VerticalAlignment="Top" Width="100" Margin="0,5,320,0" MaxWidth="100" MaxHeight="100"/>
+        </Grid>
+
+    </Grid>
+
+</Window>
