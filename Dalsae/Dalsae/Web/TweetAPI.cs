@@ -227,13 +227,11 @@ namespace Dalsae.API
 		public object count { get { return dicParams["count"]; } set { dicParams["count"] = value.ToString(); } }
 		public string tweet_mode { get { return dicParams["tweet_mode"]; } set { dicParams["tweet_mode"] = value; } }
 		public object max_id { get { return dicParams["max_id"]; } set { dicParams["max_id"] = value.ToString(); isMore = true; } }
-		//public string MaxId { set { dicParams["max_id"] = value; } }
-		//public string TrimUser { set { dicParams["trim_user"] = value; } }
-		//public string ExcludeReplies { set { dicParams["exclude_replies"] = value; } }
+		public object since_id { get { return dicParams["since_id"]; } set { dicParams["since_id"] = value.ToString(); } }
 	}
 
-    //이미지 올릴 떄
-    public class PacketMediaUpload : BasePacket, IDisposable
+	//이미지 올릴 떄
+	public class PacketMediaUpload : BasePacket, IDisposable
     {
         public PacketMediaUpload()
         {
@@ -336,6 +334,7 @@ namespace Dalsae.API
 		public string count { get { return dicParams["count"]; } set { dicParams["count"] = value.ToString(); } }
 		public object max_id { get { return dicParams["max_id"]; } set { dicParams["max_id"] = value.ToString(); isMore = true; } }
 		public string tweet_mode { get { return dicParams["tweet_mode"]; } set { dicParams["tweet_mode"] = value; } }
+		public object since_id { get { return dicParams["since_id"]; } set { dicParams["since_id"] = value.ToString(); } }
 		//public string max_id { get { return dicParams["max_id"]; } set { dicParams["max_id"] = value.ToString(); } }
 		//public string trim_user { get { return dicParams["trim_user"]; } set { dicParams["trim_user"] = value.ToString(); } }
 		//public string include_entities { get { return dicParams["include_entities"]; } set { dicParams["include_entities"] = value.ToString(); } }

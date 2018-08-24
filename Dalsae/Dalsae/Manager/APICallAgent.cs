@@ -171,7 +171,7 @@ namespace Dalsae.Manager
 		#endregion
 
 		#region 트윗 목록 요청
-		public void LoadTweetList(eTweetPanel panel, string userid= "")
+		public void LoadTweetList(eTweetPanel panel, long sinceID=-1, string userid= "")
 		{
 			BasePacket packet = null;
 			Action<List<ClientTweet>> callback = null;
@@ -180,12 +180,16 @@ namespace Dalsae.Manager
 			{
 				PacketHomeTimeLine pack = new PacketHomeTimeLine();
 				pack.count = 200;
+				if (sinceID != -1)
+					pack.since_id = sinceID;
 				packet = pack;
 				callback = responseInstence.Home;
 			}
 			else if(panel== eTweetPanel.eMention)
 			{
 				PacketMentionTimeLine pack = new PacketMentionTimeLine();
+				if (sinceID != -1)
+					pack.since_id = sinceID;
 				packet = pack;
 				callback = responseInstence.Mention;
 			}

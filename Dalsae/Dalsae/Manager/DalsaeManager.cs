@@ -349,7 +349,12 @@ namespace Dalsae
 		#region 트윗 목록 요청
 		public void LoadTweet(eTweetPanel panel, string userid = "")
 		{
-			apiInstence.LoadTweetList(panel, userid);
+			apiInstence.LoadTweetList(panel, -1, userid);
+		}
+
+		public void LoadTweet(eTweetPanel panel, long sinceid, string userid = "")
+		{
+			apiInstence.LoadTweetList(panel, sinceid, userid);
 		}
 
 		public void LoadTweetMore(eTweetPanel panel, long cursor=-1, string userid="")

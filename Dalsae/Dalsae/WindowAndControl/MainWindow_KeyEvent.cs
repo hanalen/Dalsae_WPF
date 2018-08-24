@@ -359,6 +359,18 @@ namespace Dalsae
 		
 		private void LoadTweetByKey()
 		{
+			long sinceID = -1;
+			switch (selectPanel)
+			{
+				case eTweetPanel.eHome:
+					if (TweetInstence.treeHome.Count > 0)
+						sinceID = TweetInstence.treeHome[0].id;
+					break;
+				case eTweetPanel.eMention:
+					if (TweetInstence.treeMention.Count > 0)
+						sinceID = TweetInstence.treeMention[0].id;
+					break;
+			}
 			if (selectPanel == eTweetPanel.eUser)
 			{
 				if (dicPanel[eTweetPanel.eUser].treeView.Items.Count < 2) return;
@@ -367,7 +379,9 @@ namespace Dalsae
 					DalsaeInstence.LoadTweet(selectPanel, tweet.user.screen_name);
 			}
 			else
-				DalsaeInstence.LoadTweet(selectPanel);
+			{
+				DalsaeInstence.LoadTweet(selectPanel, sinceID);
+			}
 		}
 	
 
