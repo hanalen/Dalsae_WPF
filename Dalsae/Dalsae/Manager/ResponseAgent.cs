@@ -186,12 +186,14 @@ namespace Dalsae.Manager
 		{
 			if (OnHome != null)
 				Application.Current.Dispatcher.BeginInvoke(OnHome, new object[] { listTweet });
+			Response(eResponse.TIME_LINE);
 		}
 
 		public void Mention(List<ClientTweet> listTweet)
 		{
 			if (OnMention != null)
 				Application.Current.Dispatcher.BeginInvoke(OnMention, new object[] { listTweet });
+			Response(eResponse.MENTION);
 		}
 
 		public void FavoriteTweet(List<ClientTweet> listTweet)

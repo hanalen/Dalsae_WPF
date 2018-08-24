@@ -187,6 +187,16 @@ namespace Dalsae
 				statusRetweet.Visibility = Visibility.Visible;
 				sepaRetweet.Visibility = Visibility.Visible;
 			}
+			else if(response== eResponse.TIME_LINE)
+			{
+				statusHome.Visibility = Visibility.Visible;
+				sepaHome.Visibility = Visibility.Visible;
+			}
+			else if( response== eResponse.MENTION)
+			{
+				statusMention.Visibility = Visibility.Visible;
+				sepaMention.Visibility = Visibility.Visible;
+			}
 		}
 
 		private void OnResponse(eResponse response)
@@ -206,14 +216,24 @@ namespace Dalsae
 				statusRetweet.Visibility = Visibility.Collapsed;
 				sepaRetweet.Visibility = Visibility.Collapsed;
 			}
+			else if (response == eResponse.TIME_LINE)
+			{
+				statusHome.Visibility = Visibility.Collapsed;
+				sepaHome.Visibility = Visibility.Collapsed;
+			}
+			else if (response == eResponse.MENTION)
+			{
+				statusMention.Visibility = Visibility.Collapsed;
+				sepaMention.Visibility = Visibility.Collapsed;
+			}
 		}
 
 		private void UsInstence_OnChangedStatus(bool isConnected)
 		{
 			if (isConnected)
-				statusStream.Content= "스트리밍 연결 됨";
+				statusStream.Content= "스트리밍 On";
 			else
-				statusStream.Content = "스트리밍 연결 해제 됨";
+				statusStream.Content = "스트리밍 Off";
 		}
 
 		private void SetListBox()
