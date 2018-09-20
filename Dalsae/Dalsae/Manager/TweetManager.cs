@@ -141,9 +141,11 @@ namespace Dalsae
 				if (DataInstence.isShowTweet(tweet, panel) == false) return;//트윗 미표시
 
 				bool isShowTweet = true;
+				if (DataInstence.option.MatchHighlight(tweet.originalTweet.text) || tweet.isMention)
+					tweet.uiProperty.isHighlight = true;
 				if (panel == eTweetPanel.eHome)
 				{
-					if (DataInstence.option.MatchHighlight(tweet.originalTweet.text) || tweet.isMention)//하이라이트,멘션 멘션에 추가
+					if (tweet.uiProperty.isHighlight)//하이라이트,멘션 멘션에 추가
 						AddTweetData(eTweetPanel.eMention, tweet);
 					else if (DataInstence.CheckIsMe(tweet.originalTweet.user.id) && tweet.retweeted)//내 트윗 체크(리트윗용)
 					{
@@ -154,10 +156,6 @@ namespace Dalsae
 						//	Retweet(tweet, true);
 					}
 
-				}
-				else if(DataInstence.option.MatchHighlight(tweet.originalTweet.text) || tweet.isMention)
-				{
-					tweet.uiProperty.isHighlight = true;
 				}
 				if (isShowTweet)
 					AddTweetData(panel, tweet);
