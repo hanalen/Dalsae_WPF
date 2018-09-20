@@ -230,24 +230,28 @@ namespace Dalsae.Manager
 		{
 			if (OnHomeMore != null)
 				Application.Current.Dispatcher.BeginInvoke(OnHomeMore, new object[] { listTweet });
+			Response(eResponse.TIME_LINE);
 		}
 
 		public void MentionMore(List<ClientTweet> listTweet)
 		{
 			if (OnMentionMore != null)
 				Application.Current.Dispatcher.BeginInvoke(OnMentionMore, new object[] { listTweet });
+			Response(eResponse.MENTION);
 		}
 
 		public void FavoriteMore(List<ClientTweet> listTweet)
 		{
 			if (OnFavoriteMore != null)
 				Application.Current.Dispatcher.BeginInvoke(OnFavoriteMore, new object[] { listTweet });
+			Response(eResponse.FAVORITE_LIST);
 		}
 
 		public void UserMore(List<ClientTweet> listTweet)
 		{
 			if (OnUserMore != null)
 				Application.Current.Dispatcher.BeginInvoke(OnUserMore, new object[] { listTweet });
+			Response(eResponse.USER_TIMELINE);
 		}
 
 		public void UserTweetMediaMore(List<ClientTweet> listTweet)

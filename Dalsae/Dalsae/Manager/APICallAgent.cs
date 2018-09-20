@@ -229,21 +229,21 @@ namespace Dalsae.Manager
 				pack.max_id = cursor;
 				pack.count = 200;
 				packet = pack;
-				callback = responseInstence.Home;
+				callback = responseInstence.HomeMore;
 			}
 			else if (panel == eTweetPanel.eMention)
 			{
 				PacketMentionTimeLine pack = new PacketMentionTimeLine();
 				pack.max_id = cursor;
 				packet = pack;
-				callback = responseInstence.Mention;
+				callback = responseInstence.MentionMore;
 			}
 			else if (panel == eTweetPanel.eFavorite)
 			{
 				PacketFavoritesList pack = new PacketFavoritesList();
 				pack.max_id = cursor;
 				packet = pack;
-				callback = responseInstence.FavoriteTweet;
+				callback = responseInstence.FavoriteMore;
 			}
 			else if (panel == eTweetPanel.eUser)
 			{
@@ -251,7 +251,7 @@ namespace Dalsae.Manager
 				pack.max_id = cursor;
 				pack.screen_name = userid;
 				packet = pack;
-				callback = responseInstence.UserTweet;
+				callback = responseInstence.UserMore;
 			}
 			else if (panel == eTweetPanel.eUserMedia)
 			{

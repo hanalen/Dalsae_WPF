@@ -395,22 +395,30 @@ namespace Dalsae
 
 		private void ResponseHomeMore(List<ClientTweet> listTweet)
 		{
-			TweetInstence.AddTweet(eTweetPanel.eHome, listTweet, true);
+			for (int i = 0; i < listTweet.Count; i++)
+				TweetInstence.AddTweetMore(eTweetPanel.eHome, listTweet[i]);
+			//TweetInstence.AddTweet(eTweetPanel.eHome, listTweet, true);
 		}
 
 		private void ResponseMentionMore(List<ClientTweet> listTweet)
 		{
-			TweetInstence.AddTweet(eTweetPanel.eMention, listTweet, true);
+			for (int i = 0; i < listTweet.Count; i++)
+				TweetInstence.AddTweetMore(eTweetPanel.eMention, listTweet[i]);
+			//TweetInstence.AddTweet(eTweetPanel.eMention, listTweet, true);
 		}
 
 		private void ResponseFavoriteMore(List<ClientTweet> listTweet)
 		{
-			TweetInstence.AddTweet(eTweetPanel.eFavorite, listTweet, true);
+			for (int i = 0; i < listTweet.Count; i++)
+				TweetInstence.AddTweetMore(eTweetPanel.eFavorite, listTweet[i]);
+			//TweetInstence.AddTweet(eTweetPanel.eFavorite, listTweet, true);
 		}
 
 		private void ResponseUserMore(List<ClientTweet> listTweet)
 		{
-			TweetInstence.AddTweet(eTweetPanel.eUser, listTweet, true);
+			for (int i = 0; i < listTweet.Count; i++)
+				TweetInstence.AddTweetMore(eTweetPanel.eUser, listTweet[i]);
+			//TweetInstence.AddTweet(eTweetPanel.eUser, listTweet, true);
 		}
 
 		private void ResponseUserMediaMore(List<ClientTweet> listTweet)

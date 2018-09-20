@@ -121,7 +121,11 @@ namespace Dalsae
 			dicTweetTree[eTweetPanel.eUserMedia].Add(new ClientTweet());
 		}
 
-		//스트리밍에서 호출하게 될 트윗 추가
+		/// <summary>
+		/// 기존에는 스트리밍에서 호출 했지만 현재 홈/멘션 요청은 여기를 탄다
+		/// </summary>
+		/// <param name="panel"></param>
+		/// <param name="tweet"></param>
 		public void AddTweet(eTweetPanel panel, ClientTweet tweet)
 		{
 			lock (lockObject)
@@ -157,6 +161,15 @@ namespace Dalsae
 				//if (DataInstence.CheckIsMe(tweet.user.id) && tweet.retweeted_status != null)//리트윗 갱신
 				//	Retweet(tweet, true);
 			}
+		}
+
+		public void AddTweetMore(eTweetPanel panel, ClientTweet tweet)
+		{
+			tweet.Init();
+			if (DataInstence.option.MatchHighlight(tweet.originalTweet.text) || tweet.isMention)
+				tweet.uiProperty.isHighlight = true;
+
+			AddTweetData(panel, tweet, true);
 		}
 
 		public void ClearUserTweet()//유저 트윗은 하나만 저장
@@ -219,7 +232,7 @@ namespace Dalsae
 				}
 			}
 
-			SortTweet(panel);
+			//SortTweet(panel);
 		}
 
 		public void DeleteTweet(ClientStreamDelete tweet)
