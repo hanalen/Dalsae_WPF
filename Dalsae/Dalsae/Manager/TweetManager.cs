@@ -318,6 +318,7 @@ namespace Dalsae
 
 		private void AddTweetData(eTweetPanel panel, ClientTweet tweet, bool isMore = false)
 		{
+			if (dicHashs[panel].Contains(tweet.id)) return;
 			dicHashs[panel].Add(tweet.id);
 			SetBackground(panel, tweet);
 			if (isMore == false)
