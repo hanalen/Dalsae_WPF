@@ -50,7 +50,12 @@ namespace Dalsae.Manager
 
 		public void Reset()
 		{
-
+			timerRefresh.IsEnabled = false;
+			timerWindow.IsEnabled = false;
+			timerRefresh.Interval = TimeSpan.FromSeconds(60);
+			timerWindow.Interval = TimeSpan.FromSeconds(1);
+			timerWindow.IsEnabled = true;
+			timerRefresh.IsEnabled = true;
 		}
 
 		

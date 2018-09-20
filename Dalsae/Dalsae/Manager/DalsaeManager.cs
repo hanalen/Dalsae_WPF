@@ -493,6 +493,7 @@ namespace Dalsae
 		public void ClearClient()
 		{
 			apiInstence.StopSend();
+			Manager.RefreshAgent.refreshAgent.Reset();
 			usInstence.DisconnectStreaming();
 			DataInstence.ClearToken();
 			DeleClear dele = new DeleClear(TweetInstence.Clear);

@@ -50,6 +50,7 @@ namespace Dalsae.Web
 
 		public void DisconnectStreaming()
 		{
+			return;
 			streamRead.Dispose();
 			ct.Cancel();
 			ct = new CancellationTokenSource();

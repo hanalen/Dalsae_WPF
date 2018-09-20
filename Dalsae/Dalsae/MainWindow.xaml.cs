@@ -844,6 +844,7 @@ namespace Dalsae
 
 		public void ClearWindow()
 		{
+			tickCount = 0;
 			notiDm.isOn = false;
 			notiMention.isOn = false;
 			ClearInput();
