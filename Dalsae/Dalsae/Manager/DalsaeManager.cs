@@ -366,7 +366,7 @@ namespace Dalsae
 
 		private void ResponseHome(List<ClientTweet> listTweet)
 		{
-			for (int i = listTweet.Count - 1; i > 0; i--)
+			for (int i = listTweet.Count - 1; i > -1; i--)
 				TweetInstence.AddTweet(eTweetPanel.eHome, listTweet[i]);
 			//TweetInstence.AddTweet(eTweetPanel.eHome, listTweet, false);
 		}
@@ -378,7 +378,7 @@ namespace Dalsae
 
 		private void ResponseMention(List<ClientTweet> listTweet)
 		{
-			for (int i = listTweet.Count - 1; i > 0; i--)
+			for (int i = listTweet.Count - 1; i > -1; i--)
 				TweetInstence.AddTweet(eTweetPanel.eMention, listTweet[i]);
 			//TweetInstence.AddTweet(eTweetPanel.eMention, listTweet, false);
 		}
@@ -390,7 +390,8 @@ namespace Dalsae
 
 		private void ResponseFavorite(List<ClientTweet> listTweet)
 		{
-			TweetInstence.AddTweet(eTweetPanel.eFavorite, listTweet, false);
+			for (int i = listTweet.Count - 1; i > -1; i--)
+				TweetInstence.AddTweet(eTweetPanel.eFavorite, listTweet[i]);
 		}
 
 		private void ResponseHomeMore(List<ClientTweet> listTweet)
