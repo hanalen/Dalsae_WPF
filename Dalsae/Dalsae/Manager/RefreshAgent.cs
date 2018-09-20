@@ -21,9 +21,11 @@ namespace Dalsae.Manager
 		
 		private RefreshAgent()
 		{
-			timerRefresh.Interval = TimeSpan.FromMinutes(1);
+			timerRefresh.IsEnabled = false;
+			timerWindow.IsEnabled = false;
+			timerRefresh.Interval = TimeSpan.FromSeconds(60);
 			timerWindow.Interval = TimeSpan.FromSeconds(1);
-			timerRefresh.Tick += Timer_Tick;
+			
 		}
 
 		private void Timer_Tick(object sender, EventArgs e)
@@ -35,6 +37,7 @@ namespace Dalsae.Manager
 
 		public void SetWindowTick(EventHandler refreshTick)
 		{
+			timerRefresh.Tick += Timer_Tick;
 			timerWindow.Tick += refreshTick;
 			timerWindow.IsEnabled = true;
 			timerRefresh.IsEnabled = true;
