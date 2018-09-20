@@ -155,6 +155,10 @@ namespace Dalsae
 					}
 
 				}
+				else if(DataInstence.option.MatchHighlight(tweet.originalTweet.text) || tweet.isMention)
+				{
+					tweet.uiProperty.isHighlight = true;
+				}
 				if (isShowTweet)
 					AddTweetData(panel, tweet);
 
