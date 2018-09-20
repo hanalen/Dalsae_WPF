@@ -639,7 +639,7 @@ namespace Dalsae
 
 		private void ResponseDelete(ClientTweet tweet)
 		{
-
+			TweetInstence.DeleteTweet(tweet);
 		}
 
 		public void RetweetOff(long id)
@@ -687,7 +687,7 @@ namespace Dalsae
 
 		private void ResponseUSDelete(ClientStreamDelete delete)
 		{
-			TweetInstence.DeleteTweet(delete);
+			//TweetInstence.DeleteTweet(delete);
 			//DDeleteTweet dele = new DDeleteTweet(TweetInstence.DeleteTweet);
 			//Application.Current.Dispatcher.BeginInvoke(dele, new object[] { delete });
 		}

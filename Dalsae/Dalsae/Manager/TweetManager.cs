@@ -237,9 +237,10 @@ namespace Dalsae
 			//SortTweet(panel);
 		}
 
-		public void DeleteTweet(ClientStreamDelete tweet)
+		public void DeleteTweet(ClientTweet tweet)
 		{
-			ClientTweet deleteRetweet = null;
+			//ClientTweet deleteRetweet = null;
+			tweet.Init();
 			lock (lockObject)
 			{
 				foreach (KeyValuePair<eTweetPanel, ObservableCollection<ClientTweet>> list in dicTweetTree)
@@ -247,19 +248,19 @@ namespace Dalsae
 					for (int i = 0; i < list.Value.Count; i++)
 					{
 						if (list.Value[i].originalTweet == null) continue;//버튼!!!
-						if (list.Value[i].id == tweet.delete.status.id)//일반 트윗 체크
+						if (list.Value[i].id == tweet.originalTweet.id)//일반 트윗 체크
 						{
 							list.Value[i].uiProperty.isDeleteTweet = true;
 							dicHashs[list.Key].Remove(list.Value[i].id);
 							list.Value[i].originalTweet.retweeted = false;
-							deleteRetweet = list.Value[i];
+							//deleteRetweet = list.Value[i];
 						}
-						else if (list.Value[i].originalTweet.id == tweet.delete.status.id)//리트윗 체크, 원본 터지면 같이 삭제
+						else if (list.Value[i].originalTweet.id == tweet.originalTweet.id)//리트윗 체크, 원본 터지면 같이 삭제
 						{
 							list.Value[i].uiProperty.isDeleteTweet = true;
 							dicHashs[list.Key].Remove(list.Value[i].originalTweet.id);
 							list.Value[i].originalTweet.retweeted = false;
-							deleteRetweet = list.Value[i];
+							//deleteRetweet = list.Value[i];
 						}
 					}
 				}
