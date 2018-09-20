@@ -385,7 +385,8 @@ namespace Dalsae
 
 		private void ResponseUserTweet(List<ClientTweet> listTweet)
 		{
-			TweetInstence.AddTweet(eTweetPanel.eUser, listTweet, false);
+			for (int i = listTweet.Count - 1; i > -1; i--)
+				TweetInstence.AddTweet(eTweetPanel.eUser, listTweet[i]);
 		}
 
 		private void ResponseFavorite(List<ClientTweet> listTweet)
