@@ -166,6 +166,14 @@ namespace Dalsae
 			dicTweetTree[eTweetPanel.eUser].Add(new ClientTweet());
 		}
 
+		public long GetTopTweet(eTweetPanel panel)
+		{
+			if (dicTweetTree[panel].Count > 0)
+				return dicTweetTree[panel][0].id;
+			else
+				return -1;
+		}
+
 		public void ClearTweet(eTweetPanel panel)
 		{
 			if(panel== eTweetPanel.eUser)

@@ -881,18 +881,21 @@
                     </Grid>
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
-            <StatusBarItem x:Name="statusStream" Content="스트리밍 Off"/>
-            <Separator  Grid.Column="1"/>
-            <StatusBarItem x:Name="statusBlock" Content="차단 목록 가져오는 중" Grid.Column="2"/>
-            <Separator x:Name="sepaBlock" Grid.Column="3"/>
-            <StatusBarItem x:Name="statusFollow" Content="팔로잉 목록 가져오는 중" Grid.Column="4"/>
-            <Separator x:Name="sepaFollow" Grid.Column="5"/>
-            <StatusBarItem x:Name="statusRetweet" Content="리트윗 끈 목록 가져오는 중" Grid.Column="6"/>
-            <Separator x:Name="sepaRetweet" Grid.Column="7"/>
-            <StatusBarItem x:Name="statusHome" Content="홈 가져오는 중" Grid.Column="8"/>
-            <Separator x:Name="sepaHome" Grid.Column="9"/>
-            <StatusBarItem x:Name="statusMention" Content="멘션 가져오는중" Grid.Column="10"/>
-            <Separator x:Name="sepaMention" Grid.Column="11"/>
+            <StatusBarItem x:Name="statusTick" Content="(0/60)" Grid.Column="0"/>
+            <Separator x:Name="sepaTick" Grid.Column="1"/>
+            <StatusBarItem x:Name="statusStream" Content="스트리밍 Off" Visibility="Collapsed" Grid.Column="2"/>
+            <Separator Grid.Column="3" Visibility="Collapsed"/>
+            <StatusBarItem x:Name="statusBlock" Content="차단 목록 가져오는 중" Grid.Column="4"/>
+            <Separator x:Name="sepaBlock" Grid.Column="5"/>
+            <StatusBarItem x:Name="statusFollow" Content="팔로잉 목록 가져오는 중" Grid.Column="6"/>
+            <Separator x:Name="sepaFollow" Grid.Column="7"/>
+            <StatusBarItem x:Name="statusRetweet" Content="리트윗 끈 목록 가져오는 중" Grid.Column="8"/>
+            <Separator x:Name="sepaRetweet" Grid.Column="9"/>
+            <StatusBarItem x:Name="statusHome" Content="홈 가져오는 중" Grid.Column="10"/>
+            <Separator x:Name="sepaHome" Grid.Column="11"/>
+            <StatusBarItem x:Name="statusMention" Content="멘션 가져오는중" Grid.Column="12"/>
+            <Separator x:Name="sepaMention" Grid.Column="13"/>
+           
 
         </StatusBar>
         <Grid x:Name="messageGrid" Grid.Row="1" Visibility="{Binding Path=messageQueue.isShowMessage, ElementName=mainWindow, Converter={StaticResource boolConverter}, Mode=OneWay}" Margin="0,2">

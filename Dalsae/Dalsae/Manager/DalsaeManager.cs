@@ -307,7 +307,9 @@ namespace Dalsae
 			Task.Factory.StartNew(CheckNewVersion);
 			LoadTweet(eTweetPanel.eHome);
 			LoadTweet(eTweetPanel.eMention);
-			usInstence.ConnectUserStreaming();
+			//usInstence.ConnectUserStreaming();
+			Manager.RefreshAgent.refreshAgent.SetWindowTick(window.RefreshTick);
+			Manager.RefreshAgent.refreshAgent.Reset();
 			GetRetweetOffIds();
 			if (DataInstence.option.isLoadBlock)//프로그램 시작 시 차단 가져오는 거
 				LoadBlockIds();
@@ -364,7 +366,9 @@ namespace Dalsae
 
 		private void ResponseHome(List<ClientTweet> listTweet)
 		{
-			TweetInstence.AddTweet(eTweetPanel.eHome, listTweet, false);
+			for (int i = listTweet.Count - 1; i > 0; i--)
+				TweetInstence.AddTweet(eTweetPanel.eHome, listTweet[i]);
+			//TweetInstence.AddTweet(eTweetPanel.eHome, listTweet, false);
 		}
 
 		private void RespnseUserMedia(List<ClientTweet> listTweet)
@@ -374,7 +378,9 @@ namespace Dalsae
 
 		private void ResponseMention(List<ClientTweet> listTweet)
 		{
-			TweetInstence.AddTweet(eTweetPanel.eMention, listTweet, false);
+			for (int i = listTweet.Count - 1; i > 0; i--)
+				TweetInstence.AddTweet(eTweetPanel.eMention, listTweet[i]);
+			//TweetInstence.AddTweet(eTweetPanel.eMention, listTweet, false);
 		}
 
 		private void ResponseUserTweet(List<ClientTweet> listTweet)

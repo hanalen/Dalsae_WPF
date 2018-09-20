@@ -153,7 +153,7 @@ namespace Dalsae
 		
 		private void SetEvent()
 		{
-			UserStreaming.usInstence.OnChangedStatus += UsInstence_OnChangedStatus;
+			//UserStreaming.usInstence.OnChangedStatus += UsInstence_OnChangedStatus;
 			Manager.ResponseAgent.responseInstence.OnUserTweet += ResponseUserTweet;
 			Manager.ResponseAgent.responseInstence.OnUserMedia += ResponseUserMediaTweet;
 			Manager.APICallAgent.apiInstence.OnApiCall += OnApiCall;
@@ -267,6 +267,16 @@ namespace Dalsae
 			Top = Properties.Settings.Default.ptMainY;
 			Width = Properties.Settings.Default.ptMainWidth;
 			Height = Properties.Settings.Default.ptMainHeight;
+		}
+
+		private int tickCount = 0;
+		public void RefreshTick(object sender, EventArgs e)
+		{
+			tickCount++;
+			if (tickCount == 61)
+				tickCount = 1;
+			statusTick.Content = $"({tickCount}/60)";
+
 		}
 
 		public void SetTopUI(bool isSmall)

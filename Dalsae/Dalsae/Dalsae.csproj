@@ -98,6 +98,7 @@
     <Compile Include="Data\Hotkeys.cs" />
     <Compile Include="Data\Skin.cs" />
     <Compile Include="Manager\APICallAgent.cs" />
+    <Compile Include="Manager\RefreshAgent.cs" />
     <Compile Include="Manager\ResponseAgent.cs" />
     <Compile Include="Template\TreeViewManager.cs" />
     <Compile Include="Web\ClientJsonClass.cs" />

@@ -25,6 +25,7 @@ using System.Threading;
 using Dalsae.Template;
 using Dalsae.Data;
 using System.Collections.Concurrent;
+using Dalsae.Manager;
 
 namespace Dalsae
 {
@@ -380,7 +381,8 @@ namespace Dalsae
 			}
 			else
 			{
-				DalsaeInstence.LoadTweet(selectPanel, sinceID);
+				RefreshAgent.refreshAgent.Refresh(selectPanel, sinceID);
+				//DalsaeInstence.LoadTweet(selectPanel, sinceID);
 			}
 		}
 	
