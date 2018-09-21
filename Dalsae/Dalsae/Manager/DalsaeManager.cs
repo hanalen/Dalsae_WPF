@@ -281,6 +281,7 @@ namespace Dalsae
 
 		public void LoadedMainWindow()
 		{
+			Manager.RefreshAgent.refreshAgent.SetWindowTick(window.RefreshTick);
 			//인터넷 연결 확인
 			if (System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable() == false)
 				MessageBox.Show("인터넷 연결이 되어있지 않습니다.\r\n인터넷 연결을 확인 해주세요", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -308,7 +309,7 @@ namespace Dalsae
 			LoadTweet(eTweetPanel.eHome);
 			LoadTweet(eTweetPanel.eMention);
 			//usInstence.ConnectUserStreaming();
-			Manager.RefreshAgent.refreshAgent.SetWindowTick(window.RefreshTick);
+			
 			Manager.RefreshAgent.refreshAgent.Reset();
 			GetRetweetOffIds();
 			if (DataInstence.option.isLoadBlock)//프로그램 시작 시 차단 가져오는 거
