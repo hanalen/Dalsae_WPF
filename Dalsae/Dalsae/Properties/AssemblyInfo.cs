@@ -52,5 +52,5 @@ using System.Windows;
 // 지정되도록 할 수 있습니다.
 // [assembly: AssemblyVersion("1.0.*")]
 // 으헹
-[assembly: AssemblyVersion("2.10")]
-[assembly: AssemblyFileVersion("2.10")]
+[assembly: AssemblyVersion("2.11")]
+[assembly: AssemblyFileVersion("2.11")]
