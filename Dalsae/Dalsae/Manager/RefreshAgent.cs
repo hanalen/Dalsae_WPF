@@ -39,8 +39,6 @@ namespace Dalsae.Manager
 		{
 			timerRefresh.Tick += Timer_Tick;
 			timerWindow.Tick += refreshTick;
-			timerWindow.IsEnabled = true;
-			timerRefresh.IsEnabled = true;
 		}
 
 		public void Refresh(eTweetPanel panel, long sinceID = -1)
