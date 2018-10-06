@@ -24,6 +24,7 @@ namespace Dalsae
 		public BlockList blockList { get; set; } = new BlockList();
 		public Skin skin { get; private set; }
 
+
 		public bool isChangeOption { get; private set; } = false;
 		public bool isChangeFollow { get; private set; } = false;
 		public bool isChangeBlock { get; private set; } = false;
@@ -49,7 +50,7 @@ namespace Dalsae
 			responseInstence.OnFollowList += ResponseFollowList;
 			responseInstence.OnTweet += ResponseTweet;
 			responseInstence.OnRetweetOffIds += ResponseRetweetOffIds;
-			Web.UserStreaming.usInstence.OnTweet += ResponseTweet;
+			//Web.UserStreaming.usInstence.OnTweet += ResponseTweet;
 		}
 
 		public void Init()
@@ -375,13 +376,6 @@ namespace Dalsae
 		}
 	}
 
-	public class BlockList
-	{
-		public long next_cursor { get; set; } = -1;
-		public long previous_cursor { get; set; } = -1;
-		public HashSet<long> hashBlockUsers { get; set; } = new HashSet<long>();
-
-	}
 
 	//클라이언트 사용자 관련 값들을 들고있음
 	public class DalsaeUserInfo

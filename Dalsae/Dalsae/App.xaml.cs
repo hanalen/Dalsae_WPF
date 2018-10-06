@@ -37,6 +37,7 @@ namespace Dalsae
 			}
 			DataInstence.Init();
 			FileInstence.Init();//init
+			Manager.AccountAgent.accountInstence.Init();
 			DalsaeInstence.Init();//init
 		}
 

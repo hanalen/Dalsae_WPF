@@ -852,7 +852,7 @@ namespace Dalsae
 
 		private void LoadAccount()
 		{
-			List<string> listAccount = FileInstence.GetAccountArray();
+			List<string> listAccount = Manager.AccountAgent.accountInstence.GetUserNames();
 			for(int i=0;i<listAccount.Count;i++)
 			{
 				MenuItem item = new MenuItem();
@@ -865,16 +865,18 @@ namespace Dalsae
 
 		private void DeleteAccount()
 		{
-			foreach(object obj in menuItemAccount.Items)
-			{
-				MenuItem item = obj as MenuItem;
-				if (item == null) continue;
-				if (item.Name == FileInstence.SelectedAccountName)
-				{
-					menuItemAccount.Items.Remove(item);
-					break;
-				}
-			}
+			Manager.AccountAgent.accountInstence.DeleteAccount();
+
+			//foreach(object obj in menuItemAccount.Items)
+			//{
+			//	MenuItem item = obj as MenuItem;
+			//	if (item == null) continue;
+			//	if (item.Name == FileInstence.SelectedAccountName)
+			//	{
+			//		menuItemAccount.Items.Remove(item);
+			//		break;
+			//	}
+			//}
 		}
 
 		private void treeUser_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)

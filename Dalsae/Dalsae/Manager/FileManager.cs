@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Drawing;
 using System.Drawing.Imaging;
 using static Dalsae.DataManager;
+using static Dalsae.Manager.AccountAgent;
 using System.Windows.Media.Imaging;
 using System.Net;
 using System.ComponentModel;
@@ -32,19 +33,8 @@ namespace Dalsae
 		private const string imageFolderPath = "Image";
 		private const string tempFolderPath = "Temp";
 		public const string soundFolderPath = "Sound";
-
-		public string SelectedAccountName
-		{
-			get
-			{
-				if (switter.selectAccount == null)
-					return "";
-				else
-					return switter.selectAccount.screen_name;
-			}
-		}
+		
 		public bool isPatched { get; private set; }
-		private Switter switter = new Switter();
 		private FollowList followList = new FollowList();
 		public static FileManager FileInstence { get { return GetInstence(); } }
 		private static FileManager GetInstence()
@@ -63,13 +53,20 @@ namespace Dalsae
 			CheckDataFolder();
 			DeletePatchFile();
 			//DeleteConfigFile();
-			LoadToken();
+			//LoadToken();
 			LoadOption();
 			LoadHotKey();
 			LoadFollowList();
 			LoadBlockList();
 			LoadSkin();
+			Manager.AccountAgent.accountInstence.OnChangeAccount += OnChangeAccount;
 			//LoadSkin();
+		}
+
+		private void OnChangeAccount(UserKey switter)
+		{
+			LoadFollowList();
+			LoadBlockList();
 		}
 
 		private void CheckDataFolder()
@@ -153,8 +150,8 @@ namespace Dalsae
 				try
 				{ followList = JsonConvert.DeserializeObject<FollowList>(json); }
 				catch(Exception e){ App.SendException("Load Follow Error", ""); }
-				if (switter.selectAccount != null)
-					DataInstence.dicFollwing = followList.dicFollow[switter.selectAccount.id];
+				if (accountInstence.selectedAccount != null)
+					DataInstence.dicFollwing = followList.dicFollow[accountInstence.selectedAccount.id];
 			}
 			else
 			{
@@ -236,8 +233,9 @@ namespace Dalsae
 			DataInstence.UpdateHotkeys(hotkey);
 		}
 
-		private void LoadToken()
+		public Switter LoadSwitter()
 		{
+			Switter switter = null;
 			if (File.Exists(userFilePath))
 			{
 				string json = string.Empty;
@@ -249,12 +247,13 @@ namespace Dalsae
 
 				try { switter = JsonConvert.DeserializeObject<Switter>(json); }
 				catch (Exception e) { App.SendException("Load Switter Error", ""); }
-
-				if (switter == null)
-					switter = new Dalsae.FileManager.Switter();
-				ChangeAccount(switter.selectAccount);
 			}
+			if (switter == null)
+				switter = new Switter();
+
+			return switter;
 		}
+		
 		
 		public string[] GetSoundList()
 		{
@@ -309,95 +308,7 @@ namespace Dalsae
 			File.AppendAllText("Data/Stream.txt", "\n\n");
 		}
 
-		public string DeleteSelectAccount()
-		{
-			string ret = string.Empty;
-			if (switter.selectAccount == null) return ret;
-			if (switter.dicUserKey.ContainsKey(switter.selectAccount.id) == false) return ret;
-
-			ret = switter.dicUserKey[switter.selectAccount.id].screen_name;
-			switter.dicUserKey.Remove(switter.selectAccount.id);
-			switter.selectAccount = null;
-
-			string json = JsonConvert.SerializeObject(switter);
-			if (string.IsNullOrEmpty(json) == false)
-				using (FileStream fs = new FileStream(userFilePath, FileMode.Create))
-				using (StreamWriter writer = new StreamWriter(fs))
-				{
-					writer.Write(json);
-					writer.Flush();
-				}
-			//File.WriteAllText(userFilePath, json);
-			return ret;
-		}
-
-		private void ChangeAccount(UserKey userKey)
-		{
-			UserKey token = null;
-			if (userKey != null)
-			{
-				if(switter.dicUserKey.ContainsKey(userKey.id))
-					token = switter.dicUserKey[userKey.id];
-			}
-			else
-			{
-				if (switter.dicUserKey.Count > 0)
-				{
-					foreach (UserKey item in switter.dicUserKey.Values)
-					{
-						token = item;
-						break;
-					}
-				}
-			}
-			foreach (UserKey item in switter.dicUserKey.Values)
-			{
-				if (item.id == token.id)
-				{
-					switter.selectAccount = item;
-					break;
-				}
-			}
-			if (token != null)
-			{
-				DataInstence.UpdateToken(new Web.ResOAuth() { tokenStr = token.Token, secretStr = token.TokenSecret, isCallBack = false });
-			}
-		}
-
-		public List<string> GetAccountArray()
-		{
-			List<string> listScreenName = new List<string>();
-			foreach (UserKey item in switter.dicUserKey.Values)
-			{
-				listScreenName.Add(item.screen_name);
-			}
-			return listScreenName;
-		}
-
-		public void ClearAccountData()
-		{
-			switter = new Switter();
-			SaveSwitter();
-		}
-
-
-		public void ChangeAccount(string screen_name)
-		{
-			foreach (UserKey item in switter.dicUserKey.Values)
-			{
-				if (item.screen_name == screen_name)
-				{
-					DataInstence.UpdateToken(new Web.ResOAuth() { tokenStr = item.Token, secretStr = item.TokenSecret, isCallBack = false });
-					switter.selectAccount = item;
-					SaveSwitter();
-					if (followList.dicFollow.ContainsKey(switter.selectAccount.id))
-						DataInstence.dicFollwing = followList.dicFollow[switter.selectAccount.id];
-					break;
-				}
-			}
-		}
-
-		private void SaveSwitter()
+		public void SaveSwitter(Switter switter)
 		{
 			if (switter.dicUserKey.ContainsKey(0))
 				switter.dicUserKey.Remove(0);
@@ -412,38 +323,7 @@ namespace Dalsae
 				writer.Flush();
 			}
 		}
-
-		public void UpdateToken(DalsaeUserInfo userinfo)
-		{
-			User user = userinfo.user;
-			if (switter.dicUserKey.ContainsKey(user.id) == false)
-			{
-				UserKey key = new UserKey();
-				key.id = user.id;
-				key.Token = userinfo.Token;
-				key.TokenSecret = userinfo.TokenSecret;
-				key.screen_name = user.screen_name;
-				switter.dicUserKey.Add(user.id, key);
-				switter.selectAccount = key;
-			}
-			else
-			{
-				switter.dicUserKey[user.id].screen_name = user.screen_name;
-			}
-			SaveSwitter();
-			//string json = JsonConvert.SerializeObject(switter);
-			//if (string.IsNullOrEmpty(json)) return;
-
-
-			//using (FileStream fs = new FileStream(userFilePath, FileMode.Create))
-			//using (StreamWriter writer = new StreamWriter(fs))
-			//{
-			//	writer.Write(json);
-			//	writer.Flush();
-			//}
-			//File.WriteAllText(userFilePath, json);
-		}
-
+		
 		public bool ExistsVideo(string name)
 		{
 			return File.Exists($"{DataInstence.option.imageFolderPath}/{name}");
@@ -491,28 +371,7 @@ namespace Dalsae
 			return x.LastWriteTime.CompareTo(y.LastWriteTime);
 		}
 
-
-		public void UpdateFollowList(ConcurrentDictionary<long, UserSemi> dicUser)
-		{
-			if (switter.selectAccount == null) return;
-
-			if (followList.dicFollow.ContainsKey(switter.selectAccount.id))
-				followList.dicFollow[switter.selectAccount.id] = dicUser;
-			else
-				followList.dicFollow.Add(switter.selectAccount.id, dicUser);
-
-			if (dicUser == null) return;
-			string json = JsonConvert.SerializeObject(followList);
-			if (string.IsNullOrEmpty(json)) return;
-
-			using (FileStream fs = new FileStream(followFilePath, FileMode.Create))
-			using (StreamWriter writer = new StreamWriter(fs))
-			{
-				writer.Write(json);
-				writer.Flush();
-			}
-			//File.WriteAllText(followFilePath, json);
-		}
+		
 
 		public void UpdateBlockList(BlockList blockList)
 		{
@@ -584,25 +443,5 @@ namespace Dalsae
                 }
 			}			
 		}
-
-		private class Switter
-		{
-			public UserKey selectAccount { get; set; }
-			public Dictionary<long, UserKey> dicUserKey = new Dictionary<long, UserKey>();
-		}
-
-		private class FollowList
-		{
-			public Dictionary<long, ConcurrentDictionary<long, UserSemi>> dicFollow = new Dictionary<long, ConcurrentDictionary<long, UserSemi>>();//1차키: 계정 id, 2차키: usersemi의 id
-		}
-
-		private class UserKey
-		{
-			public long id { get; set; }
-			public string screen_name { get; set; }
-			public string Token { get; set; }
-			public string TokenSecret { get; set; }
-		}
-
 	}
 }

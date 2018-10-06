@@ -131,7 +131,7 @@ namespace Dalsae_Patch
 			for (int i = 0; i < github.Assets.Length; i++)
 			{
 				if (string.Equals(github.Assets[i].name, "Dalsae_Patch.exe", StringComparison.OrdinalIgnoreCase)) continue;//패치파일은 넘어가게
-				File.Delete(github.Assets[i].name);
+				//File.Delete(github.Assets[i].name);
 				File.Move($"{github.Assets[i].name}_", github.Assets[i].name);
 			}
 		}

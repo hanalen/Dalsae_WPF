@@ -55,6 +55,8 @@ namespace Dalsae
 
 		private void SetResponseEvent()
 		{
+			Manager.AccountAgent.accountInstence.OnChangeAccount += OnChangeAccount;
+			Manager.AccountAgent.accountInstence.OnNoAccount += OnNoAccount;
 			WebInstence.OnOAuthError += OAuthError;
 			WebInstence.OnResponseError += ResponseError;
 
@@ -91,6 +93,18 @@ namespace Dalsae
 
 			responseInstence.OnMedia += ResponseMultimeida;
 			TweetInstence.OnQt += ResponseSingleTweet;
+		}
+
+		private void OnNoAccount()
+		{
+			ClearClient();
+			StartOAuthCertification();
+		}
+
+		private void OnChangeAccount(UserKey userkey)
+		{
+			DataInstence.UpdateToken(new Web.ResOAuth() { tokenStr = userkey.Token, secretStr = userkey.TokenSecret, isCallBack = false });
+			LoadMyInfo();
 		}
 
 		public async void ResponseError(BasePacket packet, string json)
@@ -142,7 +156,8 @@ namespace Dalsae
 					{
 						case 32:
 							ShowMessageBox("인증 오류. \r\n로그인 데이터를 초기화 합니다.\r\n다시 로그인 해 주세요.", "오류");
-							FileInstence.ClearAccountData();
+							Manager.AccountAgent.accountInstence.ClearAccountData();
+							//FileInstence.ClearAccountData();
 							ClearClient();
 							StartOAuthCertification();
 							break;
@@ -234,7 +249,8 @@ namespace Dalsae
 			else
 			{
 				DataInstence.UpdateToken(oauth);
-				FileInstence.UpdateToken(DataInstence.userInfo);
+				Manager.AccountAgent.accountInstence.UpdateToken(DataInstence.userInfo);
+				//FileInstence.UpdateToken(DataInstence.userInfo);
 				LoadMyInfo();
 			}
 		}
@@ -268,7 +284,7 @@ namespace Dalsae
 		private void ResponseMyInfo(User user)
 		{
 			User.CopyUser(DataInstence.userInfo.user, user);
-			FileInstence.UpdateToken(DataInstence.userInfo);
+			Manager.AccountAgent.accountInstence.UpdateToken(DataInstence.userInfo);
 			StartApiCalls();
 		}
 		#endregion
@@ -291,10 +307,10 @@ namespace Dalsae
 
 		private void StartDalsae()
 		{
-			if (string.IsNullOrEmpty(DataInstence.userInfo.Token) || string.IsNullOrEmpty(DataInstence.userInfo.TokenSecret))//키가 없을 경우
-				StartOAuthCertification();
-			else
-				LoadMyInfo();
+			//if (!string.IsNullOrEmpty(DataInstence.userInfo.Token) && !string.IsNullOrEmpty(DataInstence.userInfo.TokenSecret))//키가 없을 경우
+			//	LoadMyInfo();
+			//	StartOAuthCertification();
+			//else
 
 			if (DataInstence.option.isPlayNoti)
 				ChangeSoundNoti(DataInstence.option.notiSound);
@@ -368,7 +384,18 @@ namespace Dalsae
 		private void ResponseHome(List<ClientTweet> listTweet)
 		{
 			for (int i = listTweet.Count - 1; i > -1; i--)
+			{
 				TweetInstence.AddTweet(eTweetPanel.eHome, listTweet[i]);
+				ClientTweet tweet = listTweet[i];
+				DalsaeUserInfo userInfo = DataInstence.userInfo;
+				if (tweet?.user?.id == userInfo.user.id)
+				{
+					if (tweet.user.screen_name != userInfo.user.screen_name)
+						userInfo.user.screen_name = tweet.user.screen_name;
+					if (tweet.user.profile_image_url != userInfo.user.profile_image_url)
+						userInfo.user.profile_image_url = tweet.user.profile_image_url;
+				}
+			}
 			//TweetInstence.AddTweet(eTweetPanel.eHome, listTweet, false);
 		}
 
@@ -514,18 +541,18 @@ namespace Dalsae
 
 		public void ChangeAccount(string screen_name)
 		{
-			if (screen_name == FileInstence.SelectedAccountName) return;
-
-			ct?.Cancel();
-			ClearClient();
-			FileInstence.ChangeAccount(screen_name);
-			LoadMyInfo();
+			if (Manager.AccountAgent.accountInstence.ChangeAccountByName(screen_name))
+			{
+				ct?.Cancel();
+				ClearClient();
+				//LoadMyInfo();
+			}
 		}
 
 		public void DeleteNowAccount()
 		{
 			ClearClient();
-			FileInstence.DeleteSelectAccount();
+			//FileInstence.DeleteSelectAccount();
 		}
 
 		#endregion

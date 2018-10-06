@@ -109,9 +109,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Data\APIKeys.cs" />
+    <Compile Include="Data\BlockAndFollowList.cs" />
     <Compile Include="Data\Enums.cs" />
     <Compile Include="Data\Hotkeys.cs" />
     <Compile Include="Data\Skin.cs" />
+    <Compile Include="Data\Switter.cs" />
+    <Compile Include="Manager\AccountAgent.cs" />
     <Compile Include="Manager\APICallAgent.cs" />
     <Compile Include="Manager\RefreshAgent.cs" />
     <Compile Include="Manager\ResponseAgent.cs" />

@@ -34,7 +34,10 @@ namespace Dalsae
 		{
 			gridPreview.Visibility = Visibility.Hidden;
 			gridPreview.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+			Manager.AccountAgent.accountInstence.Start();
 			DalsaeInstence.LoadedMainWindow();
+
 			foreach(TreeViewManager item in dicPanel.Values)
 			{
 				ScrollViewer scroll = Generate.FindElementByName<ScrollViewer>(item.treeView);
@@ -55,6 +58,7 @@ namespace Dalsae
 					DataInstence.option.isSendError = false;
 				FileInstence.UpdateOption(DataInstence.option);
 			}
+
 		}
 
 		private void mainWindow_Activated(object sender, EventArgs e)
@@ -454,7 +458,7 @@ namespace Dalsae
 		private void menuItemDeleteAccount_Click(object sender, RoutedEventArgs e)
 		{
 			DeleteAccount();
-			DalsaeInstence.DeleteNowAccount();
+			//DalsaeInstence.DeleteNowAccount();
 		}
 
 		private void menuItemChangeAccount_Click(object sender, RoutedEventArgs e)
