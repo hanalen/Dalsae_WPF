@@ -56,6 +56,26 @@ namespace Dalsae.Manager
 			RequestPacket<User>(packet, responseInstence.MyInfo);
 		}
 
+		public void GetUserInfo_Chain(long id)
+		{
+			PacketUserShow packet = new PacketUserShow(id);
+			RequestPacket<UserInfo>(packet, responseInstence.UserInfo_Chain);
+		}
+
+		public void GetUserInfo(string screenName="")
+		{
+			if (screenName == string.Empty)
+			{
+				PacketVerifyCredentials packet = new PacketVerifyCredentials();
+				RequestPacket<UserInfo>(packet, responseInstence.UserInfo);
+			}
+			else
+			{
+				PacketUserShow packet = new PacketUserShow(screenName);
+				RequestPacket<UserInfo>(packet, responseInstence.UserInfo);
+			}
+		}
+
 		#endregion
 
 		#region 팔로잉 블락 목록 가져옴
@@ -89,6 +109,24 @@ namespace Dalsae.Manager
 			parameter.user_id = id;
 			parameter.retweets = isOff;
 			RequestPacket<ClientFollowingUpdate>(parameter, responseInstence.RetweetOff);
+		}
+
+		public void GetFollowingIDS(string screenName, long cursor=-1)
+		{
+			PacketFollowingIds packet = new PacketFollowingIds(screenName, cursor);
+			RequestPacket<ClientBlockIds>(packet, responseInstence.FollowingIDS);
+		}
+
+		public void GetFollowerIDS(string screenName, long cursor=-1)
+		{
+			PacketFollowerIds packet = new PacketFollowerIds(screenName, cursor);
+			RequestPacket<ClientBlockIds>(packet, responseInstence.FollowerIDS);
+		}
+
+		public void Block(long userID)
+		{
+			PacketBlockCreate packet = new PacketBlockCreate(userID);
+			RequestPacket<Data.UserInfo>(packet, responseInstence.BlockCreate);
 		}
 		#endregion
 

@@ -277,6 +277,8 @@ namespace Dalsae
 					string str = value.ToString();
 					if (string.IsNullOrEmpty(str))
 						ret = Visibility.Collapsed;
+					else if (DataManager.DataInstence.CheckIsMe(str.Replace("@", "")))
+						ret = Visibility.Collapsed;
 					else
 						ret = Visibility.Visible;
 				}

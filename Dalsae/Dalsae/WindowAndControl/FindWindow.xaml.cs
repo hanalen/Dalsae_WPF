@@ -66,7 +66,9 @@ namespace Dalsae.WindowAndControl
 
 		private void button_Click(object sender, RoutedEventArgs e)
 		{
-			DalsaeInstence.LoadTweet(eTweetPanel.eUser, textBox.Text.Replace("@", "").Replace(" ", ""));
+			FollowWindow win = new FollowWindow(textBox.Text.Replace("@", "").Replace(" ", ""));
+			win.Show();
+			//DalsaeInstence.LoadTweet(eTweetPanel.eUser, textBox.Text.Replace("@", "").Replace(" ", ""));
 			Close();
 		}
 

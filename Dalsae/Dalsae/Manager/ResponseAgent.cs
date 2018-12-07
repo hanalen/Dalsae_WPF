@@ -32,6 +32,15 @@ namespace Dalsae.Manager
 		public event DOAuth OnOAuth = null;
 		public delegate void DUser(User user);
 		public event DUser OnUser = null;
+		/// <summary>
+		/// 팔로잉 윈도우 전용
+		/// </summary>
+		public delegate void DUserInfo(Data.UserInfo userInfo);
+		/// <summary>
+		/// 팔로잉 윈도우 전용
+		/// </summary>
+		public event DUserInfo OnUserInfo = null;
+		
 		#endregion
 
 		#region 팔로잉 차단 목록
@@ -43,6 +52,16 @@ namespace Dalsae.Manager
 		public event DRetweetOffIds OnRetweetOffIds = null;
 		public delegate void DRetweetOff(ClientFollowingUpdate relation);
 		public event DRetweetOff OnRetweetOff = null;
+
+		//체인블락 윈도우에서 사용 할 목록
+		public delegate void DBlock(Data.UserInfo userInfo);
+		public event DBlock OnBlock = null;
+		public delegate void DUserInfo_Chain(Data.UserInfo userInfo);
+		public event DUserInfo_Chain OnUserinfo_Chain = null;
+		public delegate void DFollowingIDS(ClientBlockIds ids);
+		public event DFollowingIDS OnFollowingIDS = null;
+		public delegate void DFollowerIDS(ClientBlockIds ids);
+		public event DFollowerIDS OnFollowerIDS = null;
 		#endregion
 
 		#region 트윗 목록 요청
@@ -151,11 +170,37 @@ namespace Dalsae.Manager
 				Application.Current.Dispatcher.BeginInvoke(OnUser, new object[] { user });
 		}
 
+		public void UserInfo(Data.UserInfo userInfo)
+		{
+			if(OnUserInfo!=null)
+				Application.Current.Dispatcher.BeginInvoke(OnUserInfo, new object[] { userInfo });
+		}
+
 		public void Followlist(ClientUsers user)
 		{
 			if (OnFollowList != null)
 				Application.Current.Dispatcher.BeginInvoke(OnFollowList, new object[] { user });
 			Response(eResponse.FOLLOWING_LIST);
+		}
+
+		public void FollowingIDS(ClientBlockIds ids)
+		{
+			if(OnFollowingIDS!=null)
+				Application.Current.Dispatcher.BeginInvoke(OnFollowingIDS, new object[] { ids });
+			Response(eResponse.FOLLOWING_IDS);
+		}
+
+		public void UserInfo_Chain(Data.UserInfo userInfo)
+		{
+			if (OnUserinfo_Chain != null)
+				Application.Current.Dispatcher.BeginInvoke(OnUserinfo_Chain, new object[] { userInfo });
+		}
+
+		public void FollowerIDS(ClientBlockIds ids)
+		{
+			if (OnFollowerIDS != null)
+				Application.Current.Dispatcher.BeginInvoke(OnFollowerIDS, new object[] { ids });
+			Response(eResponse.FOLLOWER_IDS);
 		}
 
 		public void BlockIds(ClientBlockIds blockIds)
@@ -177,6 +222,13 @@ namespace Dalsae.Manager
 			if (OnRetweetOff != null)
 				Application.Current.Dispatcher.BeginInvoke(OnRetweetOff, new object[] { relation });
 			Response(eResponse.FOLLOWING_UPDATE);
+		}
+
+		public void BlockCreate(Data.UserInfo userInfo)
+		{
+			if (OnBlock != null)
+				Application.Current.Dispatcher.BeginInvoke(OnBlock, new object[] { userInfo });
+			Response(eResponse.BLOCK_CREAE);
 		}
 		#endregion
 

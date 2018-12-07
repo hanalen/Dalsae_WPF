@@ -9,7 +9,7 @@
         WindowStartupLocation="Manual"
         PreviewKeyDown="Window_PreviewKeyDown"
         xmlns:custom="clr-namespace:Dalsae"
-        Title="이미지 관심글 정리 도구" Height="900" Width="550" Icon="/Dalsae;component/twitter-128.ico" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        Title="이미지 관심글 정리 도구" Height="900" Width="550" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
     <Window.Resources>
         <custom:TweetTemplateSelector x:Key="myTweetTemplateSelector"/>
         <custom:DeahwaTemplate x:Key="deahwaTemplate"/>

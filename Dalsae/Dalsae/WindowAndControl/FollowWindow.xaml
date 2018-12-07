@@ -100,12 +100,26 @@
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock x:Name="labelName" Grid.Row="0" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontWeight="Bold" FontSize="20"
-                                Text="{Binding Path=name}" />
+                               MaxWidth="310" 
+                               Text="{Binding Path=name}" />
                     <Image x:Name="imageLock" HorizontalAlignment="Left" Height="22" VerticalAlignment="Top" Source="{Binding bitmapLock, ElementName=followWindow}" Width="22" Grid.Column="1" Margin="0,2,0,0"
                            Visibility="{Binding Path=Protected, Converter={StaticResource boolConverter}}"/>
+                    <Image x:Name="image" Grid.Column="2" HorizontalAlignment="Left" Height="26" VerticalAlignment="Top" Width="26"
+                           Source="{Binding bitmapSetting, ElementName=followWindow}"
+                           Visibility="{Binding Path=screen_name, Converter={StaticResource boolConverter}}"
+                           MouseDown="image_MouseDown">
+                        <Image.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Click="contextClick_Block" Header="차단하기"/>
+                                <MenuItem Click="contextClick_ChainFollowing" Header="이 유저의 팔로잉 전부 차단"/>
+                                <MenuItem Click="contextClick_ChainFollwer" Header="이 유저의 팔로워 전부 차단"/>
+                            </ContextMenu>
+                        </Image.ContextMenu>
+                    </Image>
                 </Grid>
                 <TextBlock x:Name="labelID" Grid.Row="1" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top"
                            Text="{Binding Path=screen_name}" Foreground="#ff66757f" FontSize="14"/>
@@ -120,16 +134,16 @@
                 </TextBlock>
                 <TextBlock x:Name="labelDate" Grid.Row="5" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="0"
                            Text="{Binding Path=dateString}" FontSize="14"/>
-                
             </Grid>
-            <Button x:Name="buttonFollow" Click="buttonFollow_Click" HorizontalAlignment="Right" Margin="0,203,10,0" VerticalAlignment="Top" Width="100"
-                    Content="{Binding Path=following, Converter={StaticResource contentConverter}}" Height="35" FontSize="14"/>
+            <Button x:Name="buttonFollow" Click="buttonFollow_Click" HorizontalAlignment="Right" Margin="0,203,10,0" VerticalAlignment="Top" Width="90"
+                    Content="{Binding Path=following, Converter={StaticResource contentConverter}}" Height="35" FontSize="14"
+                    Visibility="{Binding Path=screen_name, Converter={StaticResource boolConverter}}"/>
             <TextBlock x:Name="textBlock" HorizontalAlignment="Right" Margin="0,290,540,0" TextWrapping="Wrap" Text="트윗" VerticalAlignment="Top" FontSize="14" RenderTransformOrigin="1,-0.054"/>
             <TextBlock x:Name="textBlock1" HorizontalAlignment="Right" Margin="0,317,540,0" TextWrapping="Wrap" Text="팔로잉" VerticalAlignment="Top" FontSize="14"/>
             <TextBlock x:Name="textBlock2" HorizontalAlignment="Right" Margin="0,344,540,0" TextWrapping="Wrap" Text="팔로워" VerticalAlignment="Top" FontSize="14"/>
-            <TextBlock x:Name="labelTweetCount" HorizontalAlignment="Left" Margin="57,290,0,0" TextWrapping="Wrap" Text="{Binding Path=statuses_count}" VerticalAlignment="Top" Cursor="Hand" FontSize="14" Foreground="#ff66757f" MouseDown="labelTweetCount_MouseDown"/>
-            <TextBlock x:Name="followingCount" HorizontalAlignment="Left" Margin="57,317,0,0" TextWrapping="Wrap" Text="{Binding Path=friends_count}" VerticalAlignment="Top" Cursor="Hand" FontSize="14" Foreground="#ff66757f" MouseDown="followingCount_MouseDown"/>
-            <TextBlock x:Name="follwerCount" HorizontalAlignment="Left" Margin="57,344,0,0" TextWrapping="Wrap" Text="{Binding Path=followers_count}" VerticalAlignment="Top" FontSize="14" Cursor="Hand" Foreground="#ff66757f" MouseDown="follwerCount_MouseDown"/>
+            <TextBlock x:Name="labelTweetCount" HorizontalAlignment="Left" Margin="57,290,0,0" TextWrapping="Wrap" Text="{Binding Path=statuses_count, StringFormat='{}{0:N0}'}" VerticalAlignment="Top" Cursor="Hand" FontSize="14" Foreground="#ff66757f" MouseDown="labelTweetCount_MouseDown"/>
+            <TextBlock x:Name="followingCount" HorizontalAlignment="Left" Margin="57,317,0,0" TextWrapping="Wrap" Text="{Binding Path=friends_count, StringFormat='{}{0:N0}'}" VerticalAlignment="Top" Cursor="Hand" FontSize="14" Foreground="#ff66757f" MouseDown="followingCount_MouseDown"/>
+            <TextBlock x:Name="follwerCount" HorizontalAlignment="Left" Margin="57,344,0,0" TextWrapping="Wrap" Text="{Binding Path=followers_count, StringFormat='{}{0:N0}'}" VerticalAlignment="Top" FontSize="14" Cursor="Hand" Foreground="#ff66757f" MouseDown="follwerCount_MouseDown"/>
 
         </Grid>
         <ListBox x:Name="listboxFollowing"

@@ -114,6 +114,7 @@
     <Compile Include="Data\Hotkeys.cs" />
     <Compile Include="Data\Skin.cs" />
     <Compile Include="Data\Switter.cs" />
+    <Compile Include="Data\UserInfo.cs" />
     <Compile Include="Manager\AccountAgent.cs" />
     <Compile Include="Manager\APICallAgent.cs" />
     <Compile Include="Manager\RefreshAgent.cs" />
@@ -133,6 +134,9 @@
     <Compile Include="Manager\TweetManager.cs" />
     <Compile Include="Web\TwitterWeb.cs" />
     <Compile Include="Web\UserStreaming.cs" />
+    <Compile Include="WindowAndControl\ChainBlockWindow.xaml.cs">
+      <DependentUpon>ChainBlockWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowAndControl\FavoriteToolWindow.xaml.cs">
       <DependentUpon>FavoriteToolWindow.xaml</DependentUpon>
     </Compile>
@@ -183,6 +187,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Template\ConverterTemplate.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowAndControl\ChainBlockWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -313,6 +321,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Icons\twitter-128.ico" />
+    <Resource Include="Icons\setting.png" />
     <Content Include="SharpRaven.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

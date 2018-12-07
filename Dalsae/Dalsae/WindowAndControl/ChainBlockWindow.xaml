@@ -1,0 +1,52 @@
+﻿<Window x:Class="Dalsae.WindowAndControl.ChainBlockWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Dalsae.WindowAndControl"
+        mc:Ignorable="d"
+        ResizeMode="NoResize"
+        Title="체인 블락" Height="420" Width="305" Closing="Window_Closing">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="textBlock" Grid.Row="0" HorizontalAlignment="Left" Margin="10,5,0,0" TextWrapping="Wrap" Text="해당 유저의 팔로잉 혹은 팔로워를 전부 차단하는 기능입니다." VerticalAlignment="Top"/>
+        <TextBlock x:Name="textBlock1" Grid.Row="1" HorizontalAlignment="Left" Margin="10,5,0,0" TextWrapping="Wrap" Text="체인 블락 이후 되돌릴 수 없습니다." VerticalAlignment="Top"/>
+        <CheckBox x:Name="cbFollowing" Grid.Row="2" Content="내 팔로잉은 차단에서 제외" IsChecked="True" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="cbFollower" Grid.Row="3" Content="내 팔로워는 차단에서 제외" IsChecked="True" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="button" Content="시작하기" HorizontalAlignment="Left" Margin="20,5,0,5" Grid.Row="4" VerticalAlignment="Top" Width="74" Click="button_Click"/>
+        <Grid x:Name="gridProg" Grid.Row="5">
+            <ProgressBar x:Name="progressBar" Value="0" HorizontalAlignment="Left" Height="10" Margin="54,13,0,0" VerticalAlignment="Top" Width="200"/>
+            <TextBlock x:Name="textBlock2" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="진행율" VerticalAlignment="Top"/>
+            <TextBlock x:Name="textBlock3" HorizontalAlignment="Left" Margin="10,31,0,0" TextWrapping="Wrap" Text="차단수" VerticalAlignment="Top"/>
+            <TextBlock x:Name="textBlock4" HorizontalAlignment="Left" Margin="10,52,0,0" TextWrapping="Wrap" Text="이미 차단 된 수" VerticalAlignment="Top"/>
+            <TextBlock x:Name="textBlock5" HorizontalAlignment="Left" Margin="10,73,0,0" TextWrapping="Wrap" Text="제외 된 팔로잉/팔로워 수" VerticalAlignment="Top"/>
+            <TextBlock x:Name="textBlock6" HorizontalAlignment="Left" Margin="10,94,0,0" TextWrapping="Wrap" Text="제외 된 팔로잉/팔로워 목록" VerticalAlignment="Top"/>
+            <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="100" Margin="10,115,0,5" VerticalAlignment="Top" Width="264"/>
+
+            <TextBlock x:Name="tbBlockCount" HorizontalAlignment="Left" Margin="54,31,0,0" TextWrapping="Wrap" Text="{Binding Mode=OneWay}" VerticalAlignment="Top"/>
+            <TextBlock x:Name="tbAlreadyCount" HorizontalAlignment="Left" Margin="100,52,0,0" TextWrapping="Wrap" Text="{Binding Mode=OneWay}" VerticalAlignment="Top"/>
+            <TextBlock x:Name="tbSkipCount" HorizontalAlignment="Left" Margin="152,73,0,0" TextWrapping="Wrap" Text="{Binding Mode=OneWay}" VerticalAlignment="Top"/>
+        </Grid>
+
+        <StatusBar Grid.Row="6" HorizontalAlignment="Left" Height="30" VerticalAlignment="Bottom" Width="299">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem x:Name="statusBar" Content="대기 중" Grid.Column="0" FontSize="10"/>
+        </StatusBar>
+    </Grid>
+</Window>

@@ -49,7 +49,9 @@ namespace Dalsae
 		public void Init()
 		{
 			SetResponseEvent();
-			//ThreadPool.SetMaxThreads(10, 10);//thread pool 세팅
+			ThreadPool.SetMaxThreads(50, 20);//thread pool 세팅
+			ServicePointManager.DefaultConnectionLimit = 48;
+			ServicePointManager.MaxServicePoints = 48;
 		}
 
 

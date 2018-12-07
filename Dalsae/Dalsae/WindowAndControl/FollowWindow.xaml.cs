@@ -30,39 +30,40 @@ namespace Dalsae.WindowAndControl
 	/// </summary>
 	public partial class FollowWindow : Window
 	{
-		private class UserList : ObservableCollection<UserFollow>	{ public UserList() : base() { } }
-		private UserFollow userMe;
+		private class UserList : ObservableCollection<UserInfo>	{ public UserList() : base() { } }
+		//private UserInfo userMe;
 		private delegate void DeleAddUsers(Users users);
-		private delegate void DeleUpdateUser(UserFollow user, bool isFollow);
+		private delegate void DeleUpdateUser(UserInfo user, bool isFollow);
 		private Dictionary<eUserPanel, ListBoxUserManager> dicPanel = new Dictionary<eUserPanel, ListBoxUserManager>();
 		private eUserPanel selectPanel = eUserPanel.eFollowing;
 
 		public BitmapImage gongSikImage { get; set; } = new BitmapImage();
 		public BitmapImage bitmapLock { get; set; } = new BitmapImage();
+		public BitmapImage bitmapSetting { get; set; } = new BitmapImage();
 		private enum eUserPanel
 		{
 			eFollowing,
 			eFollower,
-			eUserFollowing,
+			eUserInfoing,
 			eUserFollwer,
 		}
 
 		public FollowWindow(bool isFollowing)
 		{
 			LoadResources(bitmapLock, Properties.Resources.lockPick_Large);
-			InitializeComponent();
+			LoadResources(bitmapSetting, Properties.Resources.setting);
+			
+			LoadWindow(DataManager.DataInstence.userInfo.user.screen_name);
 
 			dicPanel.Add(eUserPanel.eFollower, new ListBoxUserManager(eUserPanel.eFollower, listboxFollower));
 			dicPanel.Add(eUserPanel.eFollowing, new ListBoxUserManager(eUserPanel.eFollowing, listboxFollowing));
-			dicPanel.Add(eUserPanel.eUserFollowing, new ListBoxUserManager(eUserPanel.eUserFollowing, listboxUserFollowing));
+			dicPanel.Add(eUserPanel.eUserInfoing, new ListBoxUserManager(eUserPanel.eUserInfoing, listboxUserFollowing));
 			dicPanel.Add(eUserPanel.eUserFollwer, new ListBoxUserManager(eUserPanel.eUserFollwer, listboxUserFollower));
 
-			
 
-			string json = WebInstence.SyncRequest(new PacketVerifyCredentials());
-			userMe = JsonConvert.DeserializeObject<UserFollow>(json);
-			userMe.Init();
-			gridUserTop.DataContext = userMe;
+			//Manager.APICallAgent.apiInstence.GetUserInfo();
+			//userMe.Init();
+			//gridUserTop.DataContext = userMe;
 			
 			if (isFollowing)
 				following_Click(null, null);
@@ -73,17 +74,17 @@ namespace Dalsae.WindowAndControl
 		public FollowWindow(string screen_name)
 		{
 			LoadResources(bitmapLock, Properties.Resources.lockPick_Large);
-			InitializeComponent();
-
+			LoadResources(bitmapSetting, Properties.Resources.setting);
+			LoadWindow(screen_name);
 
 			dicPanel.Add(eUserPanel.eFollower, new ListBoxUserManager(eUserPanel.eFollower, listboxFollower));
 			dicPanel.Add(eUserPanel.eFollowing, new ListBoxUserManager(eUserPanel.eFollowing, listboxFollowing));
-			dicPanel.Add(eUserPanel.eUserFollowing, new ListBoxUserManager(eUserPanel.eUserFollowing, listboxUserFollowing));
+			dicPanel.Add(eUserPanel.eUserInfoing, new ListBoxUserManager(eUserPanel.eUserInfoing, listboxUserFollowing));
 			dicPanel.Add(eUserPanel.eUserFollwer, new ListBoxUserManager(eUserPanel.eUserFollwer, listboxUserFollower));
 
 			string json = WebInstence.SyncRequest(new PacketVerifyCredentials());
-			userMe = JsonConvert.DeserializeObject<UserFollow>(json);
-			userMe.Init();
+			//userMe = JsonConvert.DeserializeObject<UserInfo>(json);
+			//userMe.Init();
 
 			json = WebInstence.SyncRequest(new PacketUserShow(screen_name));
 			if(string.IsNullOrEmpty(json))
@@ -92,7 +93,7 @@ namespace Dalsae.WindowAndControl
 				MessageBox.Show(this, "상대방 계정 정보를 불러 올 수 없습니다.","오류", MessageBoxButton.OK, MessageBoxImage.Warning);
 				return;
 			}
-			UserFollow user = JsonConvert.DeserializeObject<UserFollow>(json);
+			UserInfo user = JsonConvert.DeserializeObject<UserInfo>(json);
 			user.Init();
 			gridUserTop.DataContext = user;
 			Title = $"{user.screen_name} 의 프로필";
@@ -101,6 +102,13 @@ namespace Dalsae.WindowAndControl
 			//	following_Click(null, null);
 			//else
 			//	follower_Click(null, null);
+		}
+
+		private void LoadWindow(string screenName = "")
+		{
+			InitializeComponent();
+			Manager.ResponseAgent.responseInstence.OnUserInfo += OnUserInfo;
+			Manager.APICallAgent.apiInstence.GetUserInfo(screenName);
 		}
 
 		private void LoadResources(BitmapImage showImage, System.Drawing.Bitmap loadBitmap)
@@ -122,6 +130,14 @@ namespace Dalsae.WindowAndControl
 		{
 			foreach (ListBoxUserManager item in dicPanel.Values)
 				item.SetScrollviewer();
+			
+		}
+
+		private void OnUserInfo(UserInfo userInfo)
+		{
+			userInfo.Init();
+			gridUserTop.DataContext = userInfo;
+			Title = $"{userInfo.screen_name} 의 프로필";
 		}
 
 		private void hyperLink_Click(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
@@ -132,26 +148,26 @@ namespace Dalsae.WindowAndControl
 
 		private void follower_Click(object sender, RoutedEventArgs e)
 		{
-			Title = "나의 팔로워";
-			ShowPanel(eUserPanel.eFollower, userMe.screen_name);
+			//Title = "나의 팔로워";
+			ShowPanel(eUserPanel.eFollower, DataInstence.userInfo.user.screen_name);
 		}
 
 		private void following_Click(object sender, RoutedEventArgs e)
 		{
-			Title = "나의 팔로잉";
-			ShowPanel(eUserPanel.eFollowing, userMe.screen_name);
+			//Title = "나의 팔로잉";
+			ShowPanel(eUserPanel.eFollowing, DataInstence.userInfo.user.screen_name);
 		}
 
 		private void listboxUser_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			UserFollow selUser = dicPanel[selectPanel].listbox.SelectedItem as UserFollow;
+			UserInfo selUser = dicPanel[selectPanel].listbox.SelectedItem as UserInfo;
 			if (selUser == null) return;
 			gridUserTop.DataContext = selUser;
 		}
 
 		private void buttonFollow_Click(object sender, RoutedEventArgs e)
 		{
-			UserFollow user = gridUserTop.DataContext as UserFollow;
+			UserInfo user = gridUserTop.DataContext as UserInfo;
 			if (user == null) return;
 			if (DataInstence.CheckIsMe(user.id)) return;//출력중인 게 본인이면 작동 x
 
@@ -163,22 +179,22 @@ namespace Dalsae.WindowAndControl
 
 		private void labelTweetCount_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-			UserFollow user = gridUserTop.DataContext as UserFollow;
+			UserInfo user = gridUserTop.DataContext as UserInfo;
 			DalsaeInstence.LoadTweet(eTweetPanel.eUser, user.screen_name);
 		}
 
 		private void followingCount_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-			UserFollow user = gridUserTop.DataContext as UserFollow;
+			UserInfo user = gridUserTop.DataContext as UserInfo;
 
 			Title = $"{user.screen_name} 의 팔로잉";
-			ShowPanel(eUserPanel.eUserFollowing, user.screen_name);
+			ShowPanel(eUserPanel.eUserInfoing, user.screen_name);
 			
 		}
 
 		private void follwerCount_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-			UserFollow user = gridUserTop.DataContext as UserFollow;
+			UserInfo user = gridUserTop.DataContext as UserInfo;
 
 			Title = $"{user.screen_name} 의 팔로워";
 			ShowPanel(eUserPanel.eUserFollwer, user.screen_name);
@@ -199,13 +215,13 @@ namespace Dalsae.WindowAndControl
 		{
 			Grid grid = sender as Grid;
 			if (grid == null) return;
-			UserFollow user = grid.DataContext as UserFollow;
+			UserInfo user = grid.DataContext as UserInfo;
 			if (user == null) return;
 
 			grid.ContextMenu = CreateContextMenu(user);
 		}
 
-		private ContextMenu CreateContextMenu(UserFollow user)
+		private ContextMenu CreateContextMenu(UserInfo user)
 		{
 			ContextMenu contextMenu = new ContextMenu();
 			MenuItem mi = new MenuItem();
@@ -283,7 +299,7 @@ namespace Dalsae.WindowAndControl
 
 		private void contextClick_Mute(object sender, RoutedEventArgs e)
 		{
-			UserFollow user = dicPanel[selectPanel].listbox.SelectedItem as UserFollow;
+			UserInfo user = dicPanel[selectPanel].listbox.SelectedItem as UserInfo;
 			if (user == null) return;
 
 			DataInstence.option.AddMuteUser(user.screen_name);
@@ -292,7 +308,7 @@ namespace Dalsae.WindowAndControl
 
 		private void contextClick_Follow(object sender, RoutedEventArgs e)
 		{
-			UserFollow user = dicPanel[selectPanel].listbox.SelectedItem as UserFollow;
+			UserInfo user = dicPanel[selectPanel].listbox.SelectedItem as UserInfo;
 			if (user == null) return;
 
 			ThreadPool.QueueUserWorkItem(Follow, new PacketFollow(user.screen_name));
@@ -300,7 +316,7 @@ namespace Dalsae.WindowAndControl
 
 		private void contextClick_UnFollow(object sender, RoutedEventArgs e)
 		{
-			UserFollow user = dicPanel[selectPanel].listbox.SelectedItem as UserFollow;
+			UserInfo user = dicPanel[selectPanel].listbox.SelectedItem as UserInfo;
 			if (user == null) return;
 
 			ThreadPool.QueueUserWorkItem(UnFollow, new PacketUnFollow(user.screen_name));
@@ -311,14 +327,14 @@ namespace Dalsae.WindowAndControl
 			MessageBoxResult mr = MessageBox.Show("차단 하시겠습니까?", "알림", MessageBoxButton.YesNo, MessageBoxImage.None);
 			if (mr != MessageBoxResult.Yes) return;
 
-			UserFollow user = dicPanel[selectPanel].listbox.SelectedItem as UserFollow;
+			UserInfo user = gridUserTop.DataContext as UserInfo;
 			if (user == null) return;
 
 			ThreadPool.QueueUserWorkItem(Block, new PacketBlockCreate(user.id));
 		}
 		private void contextClick_UnBlock(object sender, RoutedEventArgs e)
 		{
-			UserFollow user = dicPanel[selectPanel].listbox.SelectedItem as UserFollow;
+			UserInfo user = dicPanel[selectPanel].listbox.SelectedItem as UserInfo;
 			if (user == null) return;
 
 			ThreadPool.QueueUserWorkItem(UnBlock, new PacketBlockDestroy(user.id));
@@ -328,7 +344,7 @@ namespace Dalsae.WindowAndControl
 			MessageBoxResult mr = MessageBox.Show("블락 언블락 하시겠습니까?", "알림", MessageBoxButton.YesNo, MessageBoxImage.None);
 			if (mr != MessageBoxResult.Yes) return;
 
-			UserFollow user = dicPanel[selectPanel].listbox.SelectedItem as UserFollow;
+			UserInfo user = dicPanel[selectPanel].listbox.SelectedItem as UserInfo;
 			if (user == null) return;
 
 			ThreadPool.QueueUserWorkItem(BlockUnblock, user.id);
@@ -336,14 +352,14 @@ namespace Dalsae.WindowAndControl
 
 		private void contextClick_showFollowing(object sender, RoutedEventArgs e)
 		{
-			UserFollow user = dicPanel[selectPanel].listbox.SelectedItem as UserFollow;
+			UserInfo user = dicPanel[selectPanel].listbox.SelectedItem as UserInfo;
 			if (user == null) return;
-			ShowPanel(eUserPanel.eUserFollowing, user.screen_name);
+			ShowPanel(eUserPanel.eUserInfoing, user.screen_name);
 		}
 
 		private void contextClick_showFollower(object sender, RoutedEventArgs e)
 		{
-			UserFollow user = dicPanel[selectPanel].listbox.SelectedItem as UserFollow;
+			UserInfo user = dicPanel[selectPanel].listbox.SelectedItem as UserInfo;
 			if (user == null) return;
 
 			ShowPanel(eUserPanel.eUserFollwer, user.screen_name);
@@ -351,7 +367,7 @@ namespace Dalsae.WindowAndControl
 
 		private void contextClick_showTweet(object sender, RoutedEventArgs e)
 		{
-			UserFollow user = dicPanel[selectPanel].listbox.SelectedItem as UserFollow;
+			UserInfo user = dicPanel[selectPanel].listbox.SelectedItem as UserInfo;
 			if (user == null) return;
 
 			DalsaeInstence.LoadTweet(eTweetPanel.eUser, user.screen_name);
@@ -370,7 +386,7 @@ namespace Dalsae.WindowAndControl
 			}
 			try
 			{
-				UserFollow user = JsonConvert.DeserializeObject<UserFollow>(json);
+				UserInfo user = JsonConvert.DeserializeObject<UserInfo>(json);
 				UpdateUser(user, true);
 			}
 			catch
@@ -392,7 +408,7 @@ namespace Dalsae.WindowAndControl
 			}
 			try
 			{
-				UserFollow user = JsonConvert.DeserializeObject<UserFollow>(json);
+				UserInfo user = JsonConvert.DeserializeObject<UserInfo>(json);
 				UpdateUser(user, false);
 			}
 			catch
@@ -414,7 +430,7 @@ namespace Dalsae.WindowAndControl
 			}
 			try
 			{
-				UserFollow user = JsonConvert.DeserializeObject<UserFollow>(json);
+				UserInfo user = JsonConvert.DeserializeObject<UserInfo>(json);
 				UpdateBlock(user, true);
 			}
 			catch
@@ -436,7 +452,7 @@ namespace Dalsae.WindowAndControl
 			}
 			try
 			{
-				UserFollow user = JsonConvert.DeserializeObject<UserFollow>(json);
+				UserInfo user = JsonConvert.DeserializeObject<UserInfo>(json);
 				UpdateBlock(user, false);
 			}
 			catch { MessageBox.Show("차단 해제 오류", "오류", MessageBoxButton.OK, MessageBoxImage.Warning); }
@@ -453,7 +469,7 @@ namespace Dalsae.WindowAndControl
 				MessageBox.Show("차단 제한! 몇 분 뒤 다시 시도해주세요(최대 15분)", "오류", MessageBoxButton.OK, MessageBoxImage.Warning);
 				return;
 			}
-			try { UserFollow user = JsonConvert.DeserializeObject<UserFollow>(json); }
+			try { UserInfo user = JsonConvert.DeserializeObject<UserInfo>(json); }
 			catch { MessageBox.Show("차단 오류", "오류", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
 
 			PacketBlockDestroy destroy = new PacketBlockDestroy(id);
@@ -465,13 +481,13 @@ namespace Dalsae.WindowAndControl
 			}
 			try
 			{
-				UserFollow user = JsonConvert.DeserializeObject<UserFollow>(json2);
+				UserInfo user = JsonConvert.DeserializeObject<UserInfo>(json2);
 				UpdateBlock(user, false);
 			}
 			catch { MessageBox.Show("차단 해제 오류", "오류", MessageBoxButton.OK, MessageBoxImage.Warning); return; }
 		}
 
-		private void UpdateBlock(UserFollow user, bool isBlock)
+		private void UpdateBlock(UserInfo user, bool isBlock)
 		{
 			DeleUpdateUser dele1 = new DeleUpdateUser(UpdateTopUserBlock);
 			Dispatcher.BeginInvoke(dele1, new object[] { user, isBlock });
@@ -482,14 +498,14 @@ namespace Dalsae.WindowAndControl
 			}
 		}
 
-		private void UpdateUser(UserFollow user, bool isFollow)
+		private void UpdateUser(UserInfo user, bool isFollow)
 		{
-			DeleUpdateUser dele1 = new DeleUpdateUser(UpdateTopUserFollow);
+			DeleUpdateUser dele1 = new DeleUpdateUser(UpdateTopUserInfo);
 			Dispatcher.BeginInvoke(dele1, new object[] { user, isFollow });
 
 			foreach(ListBoxUserManager listbox in dicPanel.Values)
 			{
-				ListBoxUserManager.DeleUpdateFollow dele = new ListBoxUserManager.DeleUpdateFollow(listbox.UpdateUserFollow);
+				ListBoxUserManager.DeleUpdateFollow dele = new ListBoxUserManager.DeleUpdateFollow(listbox.UpdateUserInfo);
 				Dispatcher.BeginInvoke(dele, new object[] { user, isFollow });
 			}
 		}
@@ -499,9 +515,9 @@ namespace Dalsae.WindowAndControl
 		/// </summary>
 		/// <param name="user"></param>
 		/// <param name="isBlock"></param>
-		private void UpdateTopUserBlock(UserFollow user, bool isBlock)
+		private void UpdateTopUserBlock(UserInfo user, bool isBlock)
 		{
-			UserFollow userTop = gridUserTop.DataContext as UserFollow;
+			UserInfo userTop = gridUserTop.DataContext as UserInfo;
 			if (userTop == null) return;
 
 			if (userTop.id == user.id)
@@ -513,9 +529,9 @@ namespace Dalsae.WindowAndControl
 		/// </summary>
 		/// <param name="user"></param>
 		/// <param name="isFollow"></param>
-		private void UpdateTopUserFollow(UserFollow user, bool isFollow)
+		private void UpdateTopUserInfo(UserInfo user, bool isFollow)
 		{
-			UserFollow userTop = gridUserTop.DataContext as UserFollow;
+			UserInfo userTop = gridUserTop.DataContext as UserInfo;
 			if (userTop == null) return;
 
 			if (userTop.id == user.id)
@@ -526,78 +542,17 @@ namespace Dalsae.WindowAndControl
 		//----------------------------------클래스---------------------------------------------------
 		//---------------------------------------------------------------------------------------------
 
-		private class UserFollow : BaseNoty
-		{
-			//URL변경 작업
-			public void Init()
-			{
-				if (string.IsNullOrEmpty(url)) return;
-
-				if (entities.url != null)
-					for (int i = 0; i < entities.url.urls.Length; i++)
-						if (entities.url.urls[i].url == url)
-							url = entities.url.urls[i].expanded_url;
-			}
-
-			private void SetDateTime(object value)
-			{
-				dateTime = DateTime.ParseExact(value.ToString(), "ddd MMM dd HH:mm:ss zzzz yyyy", CultureInfo.InvariantCulture);
-				dateString = $"가입일: {dateTime.ToString("yyyy년 MMM월 dd일 dddd HH:mm:ss")}";
-			}
-			private DateTime dateTime;
-			public Entities entities { get; set; }
-			public string dateString { get; set; }
-			public object created_at { get { return dateTime; } set { SetDateTime(value); } }
-			private string _profile_image_url;
-			public string profile_image_url
-			{
-				get { return _profile_image_url; }
-				set
-				{
-					_profile_image_url = value.ToString().Replace("_normal", "_bigger");
-					profile_image_orig = value.ToString().Replace("_normal", "");
-				}
-			}//인장
-			public string profile_image_orig { get; set; }
-			public string profile_image_url_https { get; set; }
-			public string profile_banner_url { get; set; }//배경 이미지
-			public string url { get; set; }//링크
-			public string profile_background_color { get; set; }//배경 색
-			public string location { get; set; }//위치
-			public string description { get; set; }//바이오
-			public int statuses_count { get; set; }//트윗수
-			public int followers_count { get; set; }
-			public int friends_count { get; set; }
-			private bool _following;
-			public bool following { get { return _following; } set { _following = value; OnPropertyChanged("following"); } }
-			public bool block { get; set; } = false;
-			public string name { get; set; }// "OAuth Dancer",
-			private string _screen_name;
-			public string screen_name { get { return _screen_name; } set { _screen_name = $"@{value.ToString()}"; } }
-			public long id { get; set; }
-			public bool Protected { get; set; }
-			public bool verified { get; set; }
-			public int favourites_count { get; set; }
-		}
 		private class Users
 		{
 			public long previous_cursor { get; set; }
 			public string previous_cursor_str { get; set; }
 			public long next_cursor { get; set; }
-			public UserFollow[] users;
-		}
-		private class Entities
-		{
-			public URL url { get; set; }
-		}
-		private class URL
-		{
-			public ClientURL[] urls { get; set; }
+			public UserInfo[] users;
 		}
 
 		private class ListBoxUserManager
 		{
-			public delegate void DeleUpdateFollow(UserFollow user, bool isFollow);
+			public delegate void DeleUpdateFollow(UserInfo user, bool isFollow);
 			public delegate void DeleUpdateBlock(long id, bool isBolck);
 			private string screenName { get; set; }
 			private eUserPanel epanel { get; set; }
@@ -656,7 +611,7 @@ namespace Dalsae.WindowAndControl
 				ThreadPool.QueueUserWorkItem(LoadUser, parameter);
 			}
 
-			public void UpdateUserFollow(UserFollow user, bool isFollow)
+			public void UpdateUserInfo(UserInfo user, bool isFollow)
 			{
 				for (int i = 0; i < userList.Count; i++)
 				{
@@ -761,6 +716,27 @@ namespace Dalsae.WindowAndControl
 
 		}
 
-	
+		private void contextClick_ChainFollowing(object sender, RoutedEventArgs e)
+		{
+			ChainBlockWindow win = new ChainBlockWindow(gridUserTop.DataContext as UserInfo, true);
+			win.Show();
+		}
+
+		private void contextClick_ChainFollwer(object sender, RoutedEventArgs e)
+		{
+			ChainBlockWindow win = new ChainBlockWindow(gridUserTop.DataContext as UserInfo, false);
+			win.Show();
+		}
+
+		private void image_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (e.ChangedButton == MouseButton.Left)
+			{
+				Image image = sender as Image;
+				ContextMenu contextMenu = image.ContextMenu;
+				contextMenu.PlacementTarget = image;
+				contextMenu.IsOpen = true;
+			}
+		}
 	}
 }

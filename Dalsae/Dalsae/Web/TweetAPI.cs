@@ -36,6 +36,7 @@ namespace Dalsae.API
 		DELETE_TWEET,
 		FOLLOWING_LIST,
 		FOLLOWING_IDS,
+		FOLLOWER_IDS,
 		FOLLOWER_LIST,
 		FOLLOWING,
 		UNFOLLOWING,
@@ -171,7 +172,15 @@ namespace Dalsae.API
 			eresponse = eResponse.USER_INFO;
 			this.screen_name = screen_name;
 		}
+		public PacketUserShow(long id)
+		{
+			url = "https://api.twitter.com/1.1/users/show.json";
+			method = "GET";
+			eresponse = eResponse.USER_INFO;
+			user_id = id.ToString();
+		}
 		public string screen_name { get { return dicParams["screen_name"]; } set { dicParams["screen_name"] = value.ToString(); } }
+		public string user_id { get { return dicParams["user_id"]; } set { dicParams["user_id"] = value.ToString(); } }
 	}
 
 	//트윗 업로드에 사용
@@ -372,12 +381,34 @@ namespace Dalsae.API
 
 	class PacketFollowingIds : BasePacket//팔로잉 아이디만 가져옴, max 5000
 	{
-		public PacketFollowingIds()
+		public PacketFollowingIds(string screenName, long cursor=-1)
 		{
 			url = "https://api.twitter.com/1.1/friends/ids.json";
 			method = "GET";
 			eresponse = eResponse.FOLLOWING_IDS;
+			count = 5000;
+			screen_name = screenName;
+			this.cursor = cursor;
 		}
+		public object screen_name { get { return dicParams["screen_name"]; } set { dicParams["screen_name"] = value.ToString(); } }
+		public object count { get { return dicParams["count"]; } set { dicParams["count"] = value.ToString(); } }
+		public object cursor { get { return dicParams["cursor"]; } set { dicParams["cursor"] = value.ToString(); } }
+	}
+
+	class PacketFollowerIds : BasePacket//팔로워 아이디만 가져옴, max 5000
+	{
+		public PacketFollowerIds(string screenName, long cursor = -1)
+		{
+			url = "https://api.twitter.com/1.1/followers/ids.json";
+			method = "GET";
+			eresponse = eResponse.FOLLOWING_IDS;
+			count = 5000;
+			screen_name = screenName;
+			this.cursor = cursor;
+		}
+		public object screen_name { get { return dicParams["screen_name"]; } set { dicParams["screen_name"] = value.ToString(); } }
+		public object count { get { return dicParams["count"]; } set { dicParams["count"] = value.ToString(); } }
+		public object cursor { get { return dicParams["cursor"]; } set { dicParams["cursor"] = value.ToString(); } }
 	}
 
 	class PacketBlockCreate : BasePacket
