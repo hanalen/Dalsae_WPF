@@ -81,17 +81,17 @@ namespace Dalsae
 			{
 				if (Keyboard.Modifiers == ModifierKeys.Control)
 					FindPrevUserTweet();
-				else
-				{
-					e.Handled = true;
-					if (dicPanel[selectPanel].ArrowUp() == false)
-						EnterInputTweet();
-				}
+				//else
+				//{
+				//	e.Handled = true;
+				//	if (dicPanel[selectPanel].ArrowUp() == false)
+				//		EnterInputTweet();
+				//}
 			}
 			else if (key== Key.Down)
 			{
-				e.Handled = true;
-				dicPanel[selectPanel].ArrowDown();
+				//e.Handled = true;
+				//dicPanel[selectPanel].ArrowDown();
 			}
 			else if (key == Key.Right)
 			{

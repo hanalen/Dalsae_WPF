@@ -50,26 +50,40 @@ namespace Dalsae.Web
 
 		public void DisconnectStreaming()
 		{
-			return;
-			streamRead.Dispose();
-			ct.Cancel();
+			streamRead?.Dispose();
+			ct?.Cancel();
 			ct = new CancellationTokenSource();
-			token = ct.Token;
+			if (ct != null)
+				token = ct.Token;
 		}
 
 		private async void SyncStreaming(BasePacket parameter)
 		{
-			while (true)
+			bool isRunStreaming = true;
+			int retryCount = 0;
+			while (isRunStreaming)
 			{
 				HttpWebRequest req;
 				if (parameter.method == "POST")
 					req = (HttpWebRequest)WebRequest.Create(parameter.url);
 				else//GET일 경우
 					req = (HttpWebRequest)WebRequest.Create(parameter.MethodGetUrl());
-
-				req.ContentType = "application/x-www-form-urlencoded;encoding=utf-8";
-				req.Method = parameter.method;
-				req.Headers.Add("Authorization", OAuth.GetInstence().GetHeader(parameter));
+				try
+				{
+					req.Proxy = new WebProxy("localhost", 8080);
+					req.ContentType = "application/x-www-form-urlencoded;encoding=utf-8";
+					req.Method = parameter.method;
+					req.Headers.Add("Authorization", OAuth.GetInstence().GetHeader(parameter));
+				}
+				catch(Exception e)
+				{
+					DalsaeManager.DalsaeInstence.ShowMessageBox("스트리밍 호흡기 연결 실패", "오류");
+					isRunStreaming = false;
+					retryCount++;
+					if (retryCount > 5)
+						isRunStreaming = false;
+					await Task.Delay(TimeSpan.FromSeconds(10));
+				}
 				try
 				{
 					using (WebResponse response = req.GetResponse())
@@ -90,19 +104,16 @@ namespace Dalsae.Web
 				{
 					App.SendException(e);
 					await Application.Current.Dispatcher.BeginInvoke(OnChangedStatus, new object[] { false });
-					//OnChangedStatus?.Invoke(false);
 				}
 				catch (Exception e)
 				{
 					App.SendException(e);
 					await Application.Current.Dispatcher.BeginInvoke(OnChangedStatus, new object[] { false });
-					//OnChangedStatus?.Invoke(false);
 				}
 				finally
 				{
 					await Application.Current.Dispatcher.BeginInvoke(OnChangedStatus, new object[] { false });
-					//OnChangedStatus?.Invoke(false);
-					await Task.Delay(TimeSpan.FromSeconds(10));
+					await Task.Delay(TimeSpan.FromSeconds(30));
 				}
 			}
 		}

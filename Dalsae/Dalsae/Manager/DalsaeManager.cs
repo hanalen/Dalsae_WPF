@@ -23,6 +23,8 @@ using Dalsae.Web;
 using System.Text.RegularExpressions;
 using System.Net;
 using System.Collections.Concurrent;
+using System.Net.NetworkInformation;
+using System.Diagnostics;
 
 namespace Dalsae
 {
@@ -70,6 +72,7 @@ namespace Dalsae
 			responseInstence.OnUser += ResponseMyInfo;
 
 			responseInstence.OnFollowList += ResponseFollowList;
+			responseInstence.OnFollowerIDS += ResponseSingleTweetFollowerIDS;
 			responseInstence.OnBlockIds += ResponseBlockIds;
 			responseInstence.OnRetweetOff += ResponseRetweetOff;
 
@@ -95,6 +98,11 @@ namespace Dalsae
 
 			responseInstence.OnMedia += ResponseMultimeida;
 			TweetInstence.OnQt += ResponseSingleTweet;
+		}
+
+		private void ResponseSingleTweetFollowerIDS(ClientBlockIds ids)
+		{
+			apiInstence.GetFollowerIDS(DataInstence.userInfo.user.screen_name, ids.next_cursor);
 		}
 
 		private void OnNoAccount()
@@ -326,14 +334,28 @@ namespace Dalsae
 			Task.Factory.StartNew(CheckNewVersion);
 			LoadTweet(eTweetPanel.eHome);
 			LoadTweet(eTweetPanel.eMention);
-			//usInstence.ConnectUserStreaming();
-			
-			Manager.RefreshAgent.refreshAgent.Reset();
+
+			if (DataInstence.option.isUseStreaming)
+			{
+				Process proStream = Process.GetProcesses().FirstOrDefault(x => x.ProcessName == "StreamingRespirator");
+				if (DataInstence.option.isAutoRunStreaming && File.Exists(DataInstence.option.streamFilePath) && proStream == null)
+				{
+					Process p = Process.Start(DataInstence.option.streamFilePath);
+				}
+
+				usInstence.ConnectUserStreaming();
+			}
+			else
+			{
+				Manager.RefreshAgent.refreshAgent.Reset();
+			}
 			GetRetweetOffIds();
+			LoadFollowerIDS();
 			if (DataInstence.option.isLoadBlock)//프로그램 시작 시 차단 가져오는 거
 				LoadBlockIds();
 			if (DataInstence.option.isLoadFollwing)//프로그램 시작 시 팔로 가져오는 거
 				LoadFollowList();
+
 			//LoadTweet(ePanel.eFavorite);
 			//LoadTweet(ePanel.eDm);
 		}
@@ -344,6 +366,11 @@ namespace Dalsae
 		private void LoadFollowList()
 		{
 			apiInstence.GetFollwing(DataInstence.userInfo.user.id);
+		}
+
+		private void LoadFollowerIDS()
+		{
+			apiInstence.GetFollowerIDS(DataInstence.userInfo.user.screen_name);
 		}
 
 		private void LoadBlockIds()
@@ -523,7 +550,8 @@ namespace Dalsae
 		public void ClearClient()
 		{
 			apiInstence.StopSend();
-			Manager.RefreshAgent.refreshAgent.Reset();
+			if (DataInstence.option.isUseStreaming == false)
+				Manager.RefreshAgent.refreshAgent.Reset();
 			usInstence.DisconnectStreaming();
 			DataInstence.ClearToken();
 			DeleClear dele = new DeleClear(TweetInstence.Clear);

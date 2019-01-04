@@ -16,6 +16,7 @@ using static Dalsae.DataManager;
 using static Dalsae.FileManager;
 using System.Drawing.Text;
 using System.Globalization;
+using Microsoft.Win32;
 
 namespace Dalsae.WindowAndControl
 {
@@ -76,6 +77,12 @@ namespace Dalsae.WindowAndControl
 			checkLoadBlock.IsChecked = option.isLoadBlock;
 			checkLoadFollwing.IsChecked = option.isLoadFollwing;
 
+			//스트리밍
+			cbAutoRunStream.IsChecked = option.isAutoRunStreaming;
+			cbUseStream.IsChecked = option.isUseStreaming;
+			tbStreamFilePath.Text = option.streamFilePath;
+			tbPort.Text = option.streamPort.ToString();
+
 			//알림 설정 연동 컨트롤 on/off
 			if (option.isPlayNoti == false)
 			{
@@ -124,7 +131,7 @@ namespace Dalsae.WindowAndControl
 
 		private void SetImagePath()
 		{
-			textPath.Text = DataInstence.option.imageFolderPath;
+			tbImagePath.Text = DataInstence.option.imageFolderPath;
 		}
 
 		private void SetMute()
@@ -136,18 +143,20 @@ namespace Dalsae.WindowAndControl
 			arrMuteUser = option.listMuteUser.ToArray();
 			arrMuteWord = option.listMuteWord.ToArray();
 			dicMuteTweet = option.dicMuteTweet;
-
-			//dicMuteTweet.Add(123123, "abc");
-			//dicMuteTweet.Add(456456, "def");
-			//dicMuteTweet.Add(789789, "ghi");
-			//dicMuteTweet.Add(012012, "jkl");
-			//dicMuteTweet.Add(345345, "mno");
-
 		}
 
 		private void Save()
 		{
 			Option option = DataInstence.option;
+
+			int port = 8080;
+			if (int.TryParse(tbPort.Text, out port) == false)
+			{
+				MessageBox.Show(this, "스트리밍 PORT번호에 숫자만 입력 해주세요.", "오류", MessageBoxButton.OK, MessageBoxImage.Error);
+				tbPort.Focus();
+				return;
+			}
+
 
 			if (comboFont.SelectedItem != null && comboFont.SelectedItem is FontFamily)
 				option.font = comboFont.SelectedItem as FontFamily;
@@ -156,13 +165,17 @@ namespace Dalsae.WindowAndControl
 			option.isBoldFont = (bool)cbBold.IsChecked;
 
 			//이미지 경로가 수정 되었을 경우에만 수정
-			if (option.imageFolderPath != textPath.Text)
+			if (option.imageFolderPath != tbImagePath.Text)
 			{
 				//경로가 기본 폴더인지 체크하고 기본 폴더면 기본 폴더로 수정, 저장
-				if (new DirectoryInfo("Image").FullName == new DirectoryInfo(textPath.Text).FullName)
+				if (new DirectoryInfo("Image").FullName == new DirectoryInfo(tbImagePath.Text).FullName)
 					option.imageFolderPath = "Image";
 				else
-					option.imageFolderPath = textPath.Text;
+					option.imageFolderPath = tbImagePath.Text;
+			}
+			if(option.streamFilePath!=tbStreamFilePath.Text)
+			{
+				option.streamFilePath = tbStreamFilePath.Text;
 			}
 			//트윗 등록
 			option.isYesnoTweet = (bool)checkSendTweet.IsChecked;
@@ -186,6 +199,12 @@ namespace Dalsae.WindowAndControl
 			DalsaeManager.DalsaeInstence.ChangeSmallUI(option.isSmallUI);
 			option.isShowPropic = (bool)checkShowPropic.IsChecked;
 			option.isBigPropic = (bool)checkShowBigPropic.IsChecked;
+
+			//스트리밍
+			option.isUseStreaming = (bool)cbUseStream.IsChecked;
+			option.isAutoRunStreaming = (bool)cbAutoRunStream.IsChecked;
+			option.streamFilePath = tbStreamFilePath.Text;
+			option.streamPort = port;
 
 			//시작 옵션
 			option.isLoadBlock = (bool)checkLoadBlock.IsChecked;
@@ -221,7 +240,7 @@ namespace Dalsae.WindowAndControl
 			foreach (KeyValuePair<long, string> item in dicMuteTweet)
 				option.dicMuteTweet.Add(item.Key, item.Value);
 
-			FileManager.FileInstence.UpdateOption(option);
+			FileInstence.UpdateOption(option);
 		}
 
 		private void checkPlayNoti_Chacked(object sender, RoutedEventArgs e)
@@ -279,7 +298,7 @@ namespace Dalsae.WindowAndControl
 
 			if (fbd.ShowDialog()== System.Windows.Forms.DialogResult.OK)
 			{
-				textPath.Text = fbd.SelectedPath;
+				tbImagePath.Text = fbd.SelectedPath;
 			}
 		}
 
@@ -291,6 +310,16 @@ namespace Dalsae.WindowAndControl
 		private void checkShowPropic_Unchecked(object sender, RoutedEventArgs e)
 		{
 			checkShowBigPropic.Visibility = Visibility.Hidden;
+		}
+
+		private void btnStreamPath_Click(object sender, RoutedEventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.Title = "열기";
+			ofd.Filter = "싫애 파일(*.exe)|*.exe;";
+
+			if(ofd.ShowDialog().Value)
+				tbStreamFilePath.Text = ofd.FileName;
 		}
 	}
 }

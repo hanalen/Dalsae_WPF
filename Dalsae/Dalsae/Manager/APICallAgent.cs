@@ -11,6 +11,7 @@ using System.Windows.Media.Imaging;
 using Dalsae.API;
 using Dalsae.Data;
 using Dalsae.Web;
+using System.Windows.Threading;
 using static Dalsae.Manager.ResponseAgent;
 using static Dalsae.TwitterWeb;
 
@@ -117,8 +118,15 @@ namespace Dalsae.Manager
 			RequestPacket<ClientBlockIds>(packet, responseInstence.FollowingIDS);
 		}
 
-		public void GetFollowerIDS(string screenName, long cursor=-1)
+		public void GetFollowerIDS_Chain(string screenName, long cursor=-1)
 		{
+			PacketFollowerIds packet = new PacketFollowerIds(screenName, cursor);
+			RequestPacket<ClientBlockIds>(packet, responseInstence.FollowerIDS_Chain);
+		}
+
+		public void GetFollowerIDS(string screenName, long cursor = -1)
+		{
+			if (cursor == 0) return;
 			PacketFollowerIds packet = new PacketFollowerIds(screenName, cursor);
 			RequestPacket<ClientBlockIds>(packet, responseInstence.FollowerIDS);
 		}
@@ -126,7 +134,7 @@ namespace Dalsae.Manager
 		public void Block(long userID)
 		{
 			PacketBlockCreate packet = new PacketBlockCreate(userID);
-			RequestPacket<Data.UserInfo>(packet, responseInstence.BlockCreate);
+			RequestPacket<Data.UserInfo>(packet, responseInstence.BlockCreate, DispatcherPriority.Background);
 		}
 		#endregion
 
@@ -325,12 +333,45 @@ namespace Dalsae.Manager
 		CancellationTokenSource ct = new CancellationTokenSource();
 		CancellationToken token;
 
-		public void RequestPacket<TRes>(BasePacket parameter, Action<TRes> callback)
+		public void RequestPacket<TRes>(BasePacket parameter, Action<TRes> callback, DispatcherPriority priority = DispatcherPriority.Normal)
 		{
 			if (OnApiCall != null)
-				Application.Current.Dispatcher.BeginInvoke(OnApiCall, new object[] { parameter.eresponse });
+				Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, OnApiCall, new object[] { parameter.eresponse });
 
-			Task t = Task.Factory.StartNew(new Action((() => TaskRequestPacket<TRes>(parameter, callback))), token);
+			Task t = null;
+			if (priority == DispatcherPriority.Send)
+			{
+				t = Task.Factory.StartNew(
+					  new Action((() => TaskRequestPacket(parameter, callback))),
+					  CancellationToken.None,
+					  TaskCreationOptions.None,
+					  PriorityScheduler.Highest);
+			}
+			else if (priority == DispatcherPriority.Background)
+			{
+				t = Task.Factory.StartNew(
+				  new Action((() => TaskRequestPacket(parameter, callback))),
+				  CancellationToken.None,
+				  TaskCreationOptions.None,
+				  PriorityScheduler.Lowest);
+			}
+			else if (priority == DispatcherPriority.Render)
+			{
+				t = Task.Factory.StartNew(
+				  new Action((() => TaskRequestPacket(parameter, callback))),
+				  CancellationToken.None,
+				  TaskCreationOptions.None,
+				  PriorityScheduler.AboveNormal);
+			}
+			else
+			{
+				t = Task.Factory.StartNew(
+					  new Action((() => TaskRequestPacket(parameter, callback))),
+					  CancellationToken.None,
+					  TaskCreationOptions.None,
+					  PriorityScheduler.BelowNormal);
+			}
+			//Task t = Task.Factory.StartNew(new Action((() => TaskRequestPacket<TRes>(parameter, callback))), token);
 			t.ContinueWith(TaskComplete);
 			listTask.TryAdd(t);
 		}
@@ -338,7 +379,7 @@ namespace Dalsae.Manager
 		public void RequestSingleTweetPacket<TRes>(BasePacket packet, UIProperty property, Action<TRes,UIProperty> callback)
 		{
 			if (OnApiCall != null)
-				Application.Current.Dispatcher.BeginInvoke(OnApiCall, new object[] { packet.eresponse });
+				Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, OnApiCall, new object[] { packet.eresponse });
 
 			Task t = Task.Factory.StartNew(new Action((() => TaskRequestPacket<TRes>(packet, property, callback))), token);
 			t.ContinueWith(TaskComplete);
@@ -385,5 +426,81 @@ namespace Dalsae.Manager
 			WebInstence.SyncRequestOAuth(packet, callback);
 		}
 		#endregion
+	}
+
+	
+
+	public class PriorityScheduler : TaskScheduler
+	{
+		public const string DefaultThreadName = "PriorityScheduler";
+
+		public static readonly PriorityScheduler Highest = new PriorityScheduler(ThreadPriority.Highest, 0, "PriorityScheduler (Highest)");
+		public static readonly PriorityScheduler AboveNormal = new PriorityScheduler(ThreadPriority.AboveNormal, 0, "PriorityScheduler (AboveNormal)");
+		public static readonly PriorityScheduler BelowNormal = new PriorityScheduler(ThreadPriority.BelowNormal, 0, "PriorityScheduler (BelowNormal)");
+		public static readonly PriorityScheduler Lowest = new PriorityScheduler(ThreadPriority.Lowest, 0, "PriorityScheduler (Lowest)");
+
+		private readonly string m_threadName;
+		private readonly int m_maximumConcurrencyLevel;
+		private readonly BlockingCollection<Task> m_tasks = new BlockingCollection<Task>();
+		private readonly Lazy<Thread>[] m_threads;
+
+		public PriorityScheduler(ThreadPriority priority, int concurrencyLevel, string threadName)
+		{
+			this.m_maximumConcurrencyLevel = concurrencyLevel > 0 ? concurrencyLevel : Math.Max(1, Environment.ProcessorCount);
+
+			this.m_threadName = threadName;
+
+			this.m_threads = new Lazy<Thread>[this.m_maximumConcurrencyLevel];
+			for (int i = 0; i < this.m_maximumConcurrencyLevel; ++i)
+			{
+				var ii = i;
+				this.m_threads[i] = new Lazy<Thread>(
+					() => new Thread(this.TaskWorker)
+					{
+						IsBackground = true,
+						Name = $"{this.m_threadName} - {ii}",
+						Priority = priority
+					}
+					);
+			}
+		}
+		public PriorityScheduler(ThreadPriority priority)
+			: this(priority, 0, DefaultThreadName)
+		{
+		}
+
+		private void TaskWorker()
+		{
+			foreach (var task in this.m_tasks.GetConsumingEnumerable())
+				base.TryExecuteTask(task);
+		}
+
+		public override int MaximumConcurrencyLevel
+			=> this.m_maximumConcurrencyLevel;
+
+		protected override IEnumerable<Task> GetScheduledTasks()
+		{
+			return this.m_tasks;
+		}
+
+		protected override void QueueTask(Task task)
+		{
+			this.m_tasks.Add(task);
+
+			if (!this.m_threads[0].IsValueCreated)
+				for (int i = 0; i < this.m_maximumConcurrencyLevel; i++)
+					this.m_threads[i].Value.Start();
+		}
+
+		protected override bool TryExecuteTaskInline(Task task, bool taskWasPreviouslyQueued)
+		{
+			return false;
+		}
+
+		protected override bool TryDequeue(Task task)
+		{
+			return false;
+			//throw new NotImplementedException();
+		}
 	}
 }

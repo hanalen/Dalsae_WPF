@@ -19,6 +19,7 @@ namespace Dalsae
 		public DalsaeUserInfo userInfo { get; private set; } = new DalsaeUserInfo();
 		public ConcurrentDictionary<long, UserSemi> dicFollwing { get; set; } = new ConcurrentDictionary<long, UserSemi>();
 		public HashSet<long> hashRetweetOff { get; private set; } = new HashSet<long>();
+		public HashSet<long> hashFollowerIDS { get; private set; } = new HashSet<long>();
 		public HotKeys hotKey { get; private set; }
 		public Option option { get; set; }
 		public BlockList blockList { get; set; } = new BlockList();
@@ -50,6 +51,7 @@ namespace Dalsae
 			responseInstence.OnFollowList += ResponseFollowList;
 			responseInstence.OnTweet += ResponseTweet;
 			responseInstence.OnRetweetOffIds += ResponseRetweetOffIds;
+			responseInstence.OnFollowerIDS += ResponseFollowerIDS;
 			//Web.UserStreaming.usInstence.OnTweet += ResponseTweet;
 		}
 
@@ -77,6 +79,11 @@ namespace Dalsae
 				UserSemi usersemi = new UserSemi(user.name, user.screen_name, user.id, user.profile_image_url);
 				dicFollwing.TryAdd(user.id, usersemi);
 			}
+		}
+
+		private void ResponseFollowerIDS(ClientBlockIds ids)
+		{
+			hashFollowerIDS.UnionWith(ids.ids);
 		}
 
 		public void ResponseBlockIds(ClientBlockIds blockIds)

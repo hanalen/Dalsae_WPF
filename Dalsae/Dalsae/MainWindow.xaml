@@ -883,8 +883,8 @@
             </StatusBar.ItemsPanel>
             <StatusBarItem x:Name="statusTick" Content="(0/60)" Grid.Column="0"/>
             <Separator x:Name="sepaTick" Grid.Column="1"/>
-            <StatusBarItem x:Name="statusStream" Content="스트리밍 Off" Visibility="Collapsed" Grid.Column="2"/>
-            <Separator Grid.Column="3" Visibility="Collapsed"/>
+            <StatusBarItem x:Name="statusStream" Content="스트리밍 Off" Visibility="Visible" Grid.Column="2"/>
+            <Separator x:Name="sepaStatus" Grid.Column="3" Visibility="Visible"/>
             <StatusBarItem x:Name="statusBlock" Content="차단 목록 가져오는 중" Grid.Column="4"/>
             <Separator x:Name="sepaBlock" Grid.Column="5"/>
             <StatusBarItem x:Name="statusFollow" Content="팔로잉 목록 가져오는 중" Grid.Column="6"/>

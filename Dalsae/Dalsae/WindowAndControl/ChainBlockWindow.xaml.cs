@@ -79,7 +79,7 @@ namespace Dalsae.WindowAndControl
 			else
 			{
 				statusBar.Content = "좌표의 팔로워 불러오는 중";
-				Manager.APICallAgent.apiInstence.GetFollowerIDS(userInfo.screen_name, cursor);
+				Manager.APICallAgent.apiInstence.GetFollowerIDS_Chain(userInfo.screen_name, cursor);
 			}
 		}
 
@@ -155,7 +155,7 @@ namespace Dalsae.WindowAndControl
 		{
 			Manager.ResponseAgent.responseInstence.OnBlock += OnBlock;
 			Manager.ResponseAgent.responseInstence.OnFollowingIDS += OnFollowingIDS;
-			Manager.ResponseAgent.responseInstence.OnFollowerIDS += OnFollowerIDS;
+			Manager.ResponseAgent.responseInstence.OnFollowerIDS_Chain += OnFollowerIDS;
 			Manager.ResponseAgent.responseInstence.OnUserinfo_Chain += OnUserInfo;
 			TwitterWeb.WebInstence.OnResponseError += ResponseError;
 		}
@@ -213,7 +213,7 @@ namespace Dalsae.WindowAndControl
 		{
 			Manager.ResponseAgent.responseInstence.OnBlock -= OnBlock;
 			Manager.ResponseAgent.responseInstence.OnFollowingIDS -= OnFollowingIDS;
-			Manager.ResponseAgent.responseInstence.OnFollowerIDS -= OnFollowerIDS;
+			Manager.ResponseAgent.responseInstence.OnFollowerIDS_Chain -= OnFollowerIDS;
 			Manager.ResponseAgent.responseInstence.OnUserinfo_Chain -= OnUserInfo;
 			TwitterWeb.WebInstence.OnResponseError -= ResponseError;
 		}

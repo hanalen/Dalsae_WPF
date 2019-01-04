@@ -52,6 +52,8 @@ namespace Dalsae.Manager
 		public event DRetweetOffIds OnRetweetOffIds = null;
 		public delegate void DRetweetOff(ClientFollowingUpdate relation);
 		public event DRetweetOff OnRetweetOff = null;
+		public delegate void DFollowerIDS(ClientBlockIds ids);
+		public event DFollowerIDS OnFollowerIDS = null;
 
 		//체인블락 윈도우에서 사용 할 목록
 		public delegate void DBlock(Data.UserInfo userInfo);
@@ -60,8 +62,8 @@ namespace Dalsae.Manager
 		public event DUserInfo_Chain OnUserinfo_Chain = null;
 		public delegate void DFollowingIDS(ClientBlockIds ids);
 		public event DFollowingIDS OnFollowingIDS = null;
-		public delegate void DFollowerIDS(ClientBlockIds ids);
-		public event DFollowerIDS OnFollowerIDS = null;
+		public delegate void DFollowerIDS_Chain(ClientBlockIds ids);
+		public event DFollowerIDS_Chain OnFollowerIDS_Chain = null;
 		#endregion
 
 		#region 트윗 목록 요청
@@ -194,6 +196,13 @@ namespace Dalsae.Manager
 		{
 			if (OnUserinfo_Chain != null)
 				Application.Current.Dispatcher.BeginInvoke(OnUserinfo_Chain, new object[] { userInfo });
+		}
+
+		public void FollowerIDS_Chain(ClientBlockIds ids)
+		{
+			if (OnFollowerIDS_Chain != null)
+				Application.Current.Dispatcher.BeginInvoke(OnFollowerIDS_Chain, new object[] { ids });
+			Response(eResponse.FOLLOWER_IDS);
 		}
 
 		public void FollowerIDS(ClientBlockIds ids)

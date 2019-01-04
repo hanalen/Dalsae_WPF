@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Dalsae.WindowAndControl"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
-        Title="설정" Height="741" Width="519" KeyDown="window_KeyDown">
+        Title="설정" Height="789" Width="519" KeyDown="window_KeyDown">
     <Grid>
         <GroupBox x:Name="groupBox" Header="알림" HorizontalAlignment="Left" Margin="10,140,0,0" VerticalAlignment="Top" Height="180" Width="230">
             <Grid>
@@ -66,12 +66,12 @@
                 </CheckBox>
             </Grid>
         </GroupBox>
-        <GroupBox x:Name="groupBox1" Header="기타" HorizontalAlignment="Left" Margin="10,466,0,0" VerticalAlignment="Top" Height="150" Width="485">
+        <GroupBox x:Name="groupBox1" Header="기타" HorizontalAlignment="Left" Margin="10,597,0,0" VerticalAlignment="Top" Height="115" Width="485">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="40"/>
-                    <RowDefinition Height="56"/>
-                    <RowDefinition Height="34"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="104*"/>
@@ -90,11 +90,11 @@
                 <CheckBox x:Name="cbBold" Content="굵게" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="220,11,0,0"/>
 
                 <TextBlock x:Name="textBlock4" HorizontalAlignment="Left" Margin="42,10,0,0" TextWrapping="Wrap" Text="폰트 설정" VerticalAlignment="Top" Height="16"/>
-                <TextBlock x:Name="textBlock5" HorizontalAlignment="Left" Margin="2,15,0,0" TextWrapping="Wrap" Text="이미지 저장 폴더" VerticalAlignment="Top" Grid.Row="1" Height="16"/>
-                <Button x:Name="button1" Content="폴더 선택" HorizontalAlignment="Left" Margin="10,11,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1" Grid.Row="1" Height="20" Click="buttonPath_Click"/>
-                <TextBlock x:Name="textPath" HorizontalAlignment="Left" Margin="90,13,0,0" TextWrapping="Wrap" Text="경로" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Height="16"/>
+                <TextBlock x:Name="textBlock5" HorizontalAlignment="Left" Margin="2,5,0,0" TextWrapping="Wrap" Text="이미지 저장 폴더" VerticalAlignment="Top" Grid.Row="1" Height="16"/>
+                <Button x:Name="button1" Content="폴더 선택" HorizontalAlignment="Left" Margin="289,3,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1" Grid.Row="1" Height="20" Click="buttonPath_Click"/>
                 <TextBlock x:Name="textBlock7" HorizontalAlignment="Left" Margin="11,8,0,0" TextWrapping="Wrap" Text="뮤트, 단어 알림" VerticalAlignment="Top" Grid.Row="2" Height="16"/>
                 <Button x:Name="buttonMute" Content="설정" HorizontalAlignment="Left" Margin="10,4,0,0" VerticalAlignment="Top" Width="75" Grid.Column="1" Grid.Row="2" Height="20" Click="buttonMute_Click"/>
+                <TextBox x:Name="tbImagePath" Grid.Column="1" IsReadOnly="True" HorizontalAlignment="Left" Height="23" Margin="10,2,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="274"/>
             </Grid>
         </GroupBox>
         <Button x:Name="buttonOk" Content="확인" HorizontalAlignment="Left" Margin="311,0,0,10" VerticalAlignment="Bottom" Width="75" Click="buttonOk_Click"/>
@@ -117,6 +117,22 @@
                         </TextBlock>
                     </StackPanel>
                 </CheckBox>
+            </Grid>
+        </GroupBox>
+        <GroupBox x:Name="groupBoxStreaming" Header="유저스트리밍" HorizontalAlignment="Left" Margin="10,466,0,0" VerticalAlignment="Top" Height="126" Width="485">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <CheckBox x:Name="cbUseStream" Content="유저스트리밍 호흡기 사용" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Height="15" Width="160"/>
+                <CheckBox x:Name="cbAutoRunStream" Content="스트리밍 호흡기를 자동으로 켭니다." HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="15" Width="215"/>
+                <Button x:Name="btnStreamPath" Content="파일 선택" HorizontalAlignment="Center" Margin="393,2,6,0" Grid.Row="1" VerticalAlignment="Top" Width="74" Height="20" Click="btnStreamPath_Click"/>
+                <TextBox x:Name="tbStreamFilePath" HorizontalAlignment="Left" Height="24" IsReadOnly="True" Margin="10,1,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="379" Grid.RowSpan="2"/>
+                <TextBox x:Name="tbPort" HorizontalAlignment="Left" Height="23" Margin="73,3,0,0" Grid.Row="2" TextWrapping="Wrap" Text="8080" VerticalAlignment="Top" Width="62"/>
+                <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,6,0,0" Grid.Row="2" TextWrapping="Wrap" Text="PORT 번호" VerticalAlignment="Top"/>
+
             </Grid>
         </GroupBox>
 

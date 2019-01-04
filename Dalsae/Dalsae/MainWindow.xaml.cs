@@ -149,11 +149,22 @@ namespace Dalsae
 			timer.Start();
 			findCommand.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Control));//찾기 단축키 등록
 			SetFindGridVisibility(false);
+
+			if (DataInstence.option.isUseStreaming)
+			{
+				statusStream.Visibility = Visibility.Visible;
+				sepaStatus.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				statusStream.Visibility = Visibility.Collapsed;
+				sepaStatus.Visibility = Visibility.Collapsed;
+			}
 		}
 		
 		private void SetEvent()
 		{
-			//UserStreaming.usInstence.OnChangedStatus += UsInstence_OnChangedStatus;
+			UserStreaming.usInstence.OnChangedStatus += UsInstence_OnChangedStatus;
 			Manager.ResponseAgent.responseInstence.OnUserTweet += ResponseUserTweet;
 			Manager.ResponseAgent.responseInstence.OnUserMedia += ResponseUserMediaTweet;
 			Manager.APICallAgent.apiInstence.OnApiCall += OnApiCall;

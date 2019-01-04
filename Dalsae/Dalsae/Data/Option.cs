@@ -12,36 +12,24 @@ namespace Dalsae
 {
 	public class Option:BaseNoty//옵션 추가 시 복사 생성자 유의!!!
 	{
+		#region json이그노어
+		[Newtonsoft.Json.JsonIgnore]
+		private bool _isBigPropic = false;
+		[Newtonsoft.Json.JsonIgnore]
+		private bool _isShowPropic = true;
+		[Newtonsoft.Json.JsonIgnore]
+		private bool _isShowPreview = true;
+		[Newtonsoft.Json.JsonIgnore]
+		private FontFamily _font = new FontFamily("맑은 고딕");
+		[Newtonsoft.Json.JsonIgnore]
+		private bool _isBoldFont = false;
+		[Newtonsoft.Json.JsonIgnore]
+		private int _fontSize = 14;
+		#endregion
+
 		public Option() { }
 		public void CheckNullOption()
 		{
-			//if (pointImageFormX == 0)
-			//	pointImageFormX = 100;
-			//if (pointImageFormY == 0)
-			//	pointImageFormY = 100;
-			//if (pointMainFormX == 0)
-			//	pointMainFormX = 100;
-			//if (pointMainFormY == 0)
-			//	pointMainFormY = 100;
-			//if (sizeMainFormX == 0)
-			//	sizeMainFormX = 580;
-			//if (sizeMainFormY == 0)
-			//	sizeMainFormY = 800;
-			//if (sizeImageFormX == 0)
-			//	sizeImageFormX = 580;
-			//if (sizeImageFormY == 0)
-			//	sizeImageFormY = 800;
-			//if (sizeVideoFormX == 0)
-			//	sizeVideoFormX = 580;
-			//if (sizeVideoFormY == 0)
-			//	sizeVideoFormY = 800;
-			//if (pointVideoFormX == 0)
-			//	pointVideoFormX = 100;
-			//if (pointVideoFormY == 0)
-			//	pointVideoFormY = 100;
-
-
-			//notisound는 null이어도 상관 없음
 			if (string.IsNullOrEmpty(skinName))
 				skinName = "pink";
 			if (string.IsNullOrEmpty(imageFolderPath))
@@ -52,7 +40,6 @@ namespace Dalsae
 				_font = new FontFamily("맑은 고딕");
 				fontSize = 14;
 			}
-
 
 			if (listHighlight == null)
 				listHighlight = new List<string>();
@@ -65,61 +52,166 @@ namespace Dalsae
 			if (dicMuteTweet == null)
 				dicMuteTweet = new Dictionary<long, string>();
 		}
-		public bool isShowRetweet { get; set; } = true;//TL에 리트윗을 띄울지
-		public bool isNotiRetweet { get; set; } = true;//멘션함에 리트윗을 띄울지
-		//public bool isShowBlockUser { get; set; } = false;//블락 한 사람을 띄울지(기본 안 띄움)
-		public bool isMuteMention { get; set; } = true;//멘션함도 뮤트(기본 해제)
-		public bool isYesnoTweet { get; set; } = false;//트윗 올릴 때 물어보고 올릴지(기본 안 물어봄)
-		public bool isRetweetProtectUser { get; set; } = true;//플텍 유저일 경우 수동RT해줄지(기본 함)
-		public bool isSendEnter { get; set; } = false;//트윗 올릴 때 Enter / Ctrl+Enter고르기(기본 ctrl+enter)
-		public bool isLoadFollwing { get; set; } = true;//프로그램 시작 시 팔로잉 목록을 가져올지
-		public bool isLoadBlock { get; set; } = true;//프로그램 시작 시 차단 목록을 가져올지
-		[Newtonsoft.Json.JsonIgnore]
-		private bool _isShowPropic = true;
+
+		#region 트윗 전송
+		/// <summary>
+		/// 트윗 등록 시 물어보고 올릴지 여부를 설정 합니다.
+		/// </summary>
+		public bool isYesnoTweet { get; set; } = false;
+		/// <summary>
+		/// 잠금 계정의 트윗을 리트윗 할지 여부를 설정 합니다.
+		/// </summary>
+		public bool isRetweetProtectUser { get; set; } = true;
+		/// <summary>
+		/// 트윗 등록 키를 엔터 혹은 컨트롤+엔터로 설정 합니다. 기본 컨트롤 엔터
+		/// </summary>
+		public bool isSendEnter { get; set; } = false;
+		#endregion
+
+		#region UI 및 이미지 뷰어 설정
+		/// <summary>
+		/// 인장 표시 여부를 설정 합니다.
+		/// </summary>
 		public bool isShowPropic { get { return _isShowPropic; } set { _isShowPropic = value; OnPropertyChanged("isShowPropic"); } }
-		[Newtonsoft.Json.JsonIgnore]
-		private bool _isBigPropic = false;
+		/// <summary>
+		/// 인장을 크게 표시할지 여부를 설정 합니다.
+		/// </summary>
 		public bool isBigPropic { get { return _isBigPropic; } set { _isBigPropic = value; OnPropertyChanged("isBigPropic"); } }
-		public string skinName { get; set; } = "pink";
-		public bool isPlayNoti { get; set; } = false;
-		public string notiSound { get; set; }//알림 소리(선택박스, sound폴더)
+		/// <summary>
+		/// 이미지 뷰어에서 항상 이미지 원본을 불러올지 여부를 설정 합니다.
+		/// </summary>
 		public bool isLoadOriginalImage { get; set; } = false;
+		/// <summary>
+		/// 상단 UI를 작게 표시 할지 여부를 설정 합니다.
+		/// </summary>
 		public bool isSmallUI { get; set; } = false;
-		//public int pointImageFormX { get; set; } = 100;
-		//public int pointImageFormY { get; set; } = 100;
-		//public int pointMainFormX { get; set; } = 100;
-		//public int pointMainFormY { get; set; } = 100;
-		//public int sizeMainFormX { get; set; } = 580;
-		//public int sizeMainFormY { get; set; } = 800;
-		//public int sizeImageFormX { get; set; } = 580;
-		//public int sizeImageFormY { get; set; } = 800;
-		//public int sizeVideoFormX { get; set; } = 580;
-		//public int sizeVideoFormY { get; set; } = 800;
-		//public int pointVideoFormX { get; set; } = 100;
-		//public int pointVideoFormY { get; set; } = 100;
-		//public double movieVolume { get; set; } = 0.5f;
-		[Newtonsoft.Json.JsonIgnore]
-		private bool _isShowPreview = true;
+				/// <summary>
+		/// 이미지 미리보기를 TL에 표시 여부를 설정합니다.
+		/// </summary>
 		public bool isShowPreview { get { return _isShowPreview; } set { _isShowPreview = value; OnPropertyChanged("isShowPreview"); } }//이미지 미리보기
-		public bool isShowImageTweet { get; set; } = true;//이미지 뷰어 트윗
+		/// <summary>
+		/// 이미지 뷰어에 원본 트윗 표시 여부를 설정 합니다.
+		/// </summary>
+		public bool isShowImageTweet { get; set; } = true;
+		/// <summary>
+		/// 이미지 뷰어 하단 바 표시 여부를 설정 합니다.
+		/// </summary>
 		public bool isShowImageBottom { get; set; } = true;//이미지 뷰어 하단 바
+		#endregion
+
+		#region 유저스트리밍 호흡기 설정
+		/// <summary>
+		/// 유저스트리밍 호흡기를 사용 할지 여부를 설정 합니다.
+		/// </summary>
+		public bool isUseStreaming { get; set; } = false;
+		/// <summary>
+		/// 프로그램 구동 시 유저스트리밍 호흡기를 킬지 여부를 설정 합니다.
+		/// </summary>
+		public bool isAutoRunStreaming { get; set; } = false;
+		/// <summary>
+		/// 스트리밍 호흡기 파일 경로입니다.
+		/// </summary>
+		public string streamFilePath { get; set; } = string.Empty;
+		/// <summary>
+		/// 스트리밍 호흡기 PORT번호입니다.
+		/// </summary>
+		public int streamPort { get; set; } = 8080;
+		#endregion
+
+		#region 트윗 표시 설정
+		/// <summary>
+		/// 내 트윗이 리트윗 되었을 때 홈에 표시 여부를 설정 합니다.
+		/// </summary>
+		public bool isShowRetweet { get; set; } = true;
+		/// <summary>
+		/// 내 트윗이 리트윗 되었을 때 멘션함에 표시 여부를 설정 합니다.
+		/// </summary>
+		public bool isNotiRetweet { get; set; } = true;
+		/// <summary>
+		/// 뮤트를 멘션함에도 적용 할지 여부를 설정 합니다.
+		/// </summary>
+		public bool isMuteMention { get; set; } = true;
+		#endregion
+
+		#region 프로그램 초기 구동 설정
+		/// <summary>
+		/// 프로그램 구동 시 팔로잉 목록을 가져올지 여부를 설정 합니다.
+		/// </summary>
+		public bool isLoadFollwing { get; set; } = true;
+		/// <summary>
+		/// 프로그램 구동 시 차단 목록을 가져올지 여부를 설정 합니다.
+		/// </summary>
+		public bool isLoadBlock { get; set; } = true;
+
+		#endregion
+
+		#region 폰트 설정
+		/// <summary>
+		/// 트윗 표시 폰트입니다.
+		/// </summary>
+		public FontFamily font { get { return _font; } set { _font = value; OnPropertyChanged("font"); } }
+		/// <summary>
+		/// 트윗을 굵게 표시 할 경우 사용 합니다.
+		/// </summary>
+		public bool isBoldFont { get { return _isBoldFont; } set { _isBoldFont = value; OnPropertyChanged("FontWeight"); } }
+		/// <summary>
+		/// 폰트 사이즈입니다.
+		/// </summary>
+		public int fontSize { get { return _fontSize; } set { _fontSize = value; OnPropertyChanged("fontSize"); } }
+		#endregion
+
+		#region 스킨 및 알림
+		/// <summary>
+		/// 스킨 이름입니다.
+		/// </summary>
+		public string skinName { get; set; } = "pink";
+		/// <summary>
+		/// 알림음을 재생할지 여부를 설정 합니다.
+		/// </summary>
+		public bool isPlayNoti { get; set; } = false;
+		/// <summary>
+		/// 알림음 파일의 경로입니다.
+		/// </summary>
+		public string notiSound { get; set; }
+
+		#endregion
+
+		#region 뮤트 및 하이라이트
+
+		/// <summary>
+		/// 단어 하이라이트 목록입니다.
+		/// </summary>
+		public List<string> listHighlight = new List<string>();
+		/// <summary>
+		/// 단어 뮤트 목록입니다.
+		/// </summary>
+		public List<string> listMuteWord = new List<string>();
+		/// <summary>
+		/// 클라이언트 뮤트 목록입니다.
+		/// </summary>
+		public List<string> listMuteClient = new List<string>();
+		/// <summary>
+		/// 사용자 뮤트 목록 입니다.
+		/// </summary>
+		public List<string> listMuteUser = new List<string>();
+		/// <summary>
+		/// 트윗 뮤트 목록입니다.
+		/// </summary>
+		public Dictionary<long, string> dicMuteTweet = new Dictionary<long, string>();//트윗 뮤트
+
+		#endregion
+
+		/// <summary>
+		/// 프로그램의 오류를 자동으로 보낼지 여부를 설정 합니다.
+		/// </summary>
+		public bool isSendError { get; set; } = false;
+
+		/// <summary>
+		/// 이미지 저장 폴더 경로입니다.
+		/// </summary>
 		public string imageFolderPath { get; set; } = "Image";
 
-		public List<string> listHighlight = new List<string>();//단어 하이라이트(리스트 박스?)
-		public List<string> listMuteWord = new List<string>();//단어 뮤트(리스트 박스)
-		public List<string> listMuteClient = new List<string>();//클라이언트 뮤트(리스트 박스)
-		public List<string> listMuteUser = new List<string>();//유저 뮤트(리스트 박스)
-		public Dictionary<long, string> dicMuteTweet = new Dictionary<long, string>();//트윗 뮤트
-		[Newtonsoft.Json.JsonIgnore]
-		private FontFamily _font= new FontFamily("맑은 고딕");
-		[Newtonsoft.Json.JsonIgnore]
-		private bool _isBoldFont = false;
-		[Newtonsoft.Json.JsonIgnore]
-		private int _fontSize = 14;
-		public FontFamily font { get { return _font; } set { _font = value; OnPropertyChanged("font"); } }
-		public bool isBoldFont { get { return _isBoldFont; } set { _isBoldFont = value; OnPropertyChanged("FontWeight"); } }
-		public int fontSize { get { return _fontSize; } set { _fontSize = value; OnPropertyChanged("fontSize"); } }
-		public bool isSendError { get; set; } = false;
+
 
 		public bool MatchHighlight(string text)
 		{
@@ -190,15 +282,11 @@ namespace Dalsae
 		public void AddMuteUser(string user)
 		{
 			listMuteUser.Add(user.Replace("@", ""));
-			//Properties.Settings.Default.listMuteUser.Add(user);
-			//Properties.Settings.Default.Save();
 		}
 
 		public void AddMuteClient(string client)
 		{
 			listMuteClient.Add(client);
-			//Properties.Settings.Default.listMuteClient.Add(client);
-			//Properties.Settings.Default.Save();
 		}
 
 		public void AddMuteTweet(ClientTweet tweet)
