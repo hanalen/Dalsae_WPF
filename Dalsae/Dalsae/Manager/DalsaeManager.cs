@@ -335,20 +335,20 @@ namespace Dalsae
 			LoadTweet(eTweetPanel.eHome);
 			LoadTweet(eTweetPanel.eMention);
 
-			if (DataInstence.option.isUseStreaming)
-			{
-				Process proStream = Process.GetProcesses().FirstOrDefault(x => x.ProcessName == "StreamingRespirator");
-				if (DataInstence.option.isAutoRunStreaming && File.Exists(DataInstence.option.streamFilePath) && proStream == null)
-				{
-					Process p = Process.Start(DataInstence.option.streamFilePath);
-				}
+            if (DataInstence.option.isUseStreaming && Process.GetProcesses().FirstOrDefault(x => x.ProcessName == "StreamingRespirator") != null)
+            {
+                //Process proStream = Process.GetProcesses().FirstOrDefault(x => x.ProcessName == "StreamingRespirator");
+                //if (DataInstence.option.isAutoRunStreaming && File.Exists(DataInstence.option.streamFilePath) && proStream == null)
+                //{
+                //	Process p = Process.Start(DataInstence.option.streamFilePath);
+                //}
 
-				usInstence.ConnectUserStreaming();
-			}
-			else
-			{
-				Manager.RefreshAgent.refreshAgent.Reset();
-			}
+                usInstence.ConnectUserStreaming();
+            }
+            else
+            {
+                Manager.RefreshAgent.refreshAgent.Reset();
+            }
 			GetRetweetOffIds();
 			LoadFollowerIDS();
 			if (DataInstence.option.isLoadBlock)//프로그램 시작 시 차단 가져오는 거

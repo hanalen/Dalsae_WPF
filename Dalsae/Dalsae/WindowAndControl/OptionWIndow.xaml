@@ -127,9 +127,9 @@
                     <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <CheckBox x:Name="cbUseStream" Content="유저스트리밍 호흡기 사용" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" Height="15" Width="160"/>
-                <CheckBox x:Name="cbAutoRunStream" Content="스트리밍 호흡기를 자동으로 켭니다." HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="15" Width="215"/>
-                <Button x:Name="btnStreamPath" Content="파일 선택" HorizontalAlignment="Center" Margin="393,2,6,0" Grid.Row="1" VerticalAlignment="Top" Width="74" Height="20" Click="btnStreamPath_Click"/>
-                <TextBox x:Name="tbStreamFilePath" HorizontalAlignment="Left" Height="24" IsReadOnly="True" Margin="10,1,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="379" Grid.RowSpan="2"/>
+                <CheckBox x:Name="cbAutoRunStream" Visibility="Hidden" Content="스트리밍 호흡기를 자동으로 켭니다." HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Height="15" Width="215"/>
+                <Button x:Name="btnStreamPath" Visibility="Hidden" Content="파일 선택" HorizontalAlignment="Center" Margin="393,2,6,0" Grid.Row="1" VerticalAlignment="Top" Width="74" Height="20" Click="btnStreamPath_Click"/>
+                <TextBox x:Name="tbStreamFilePath" Visibility="Hidden" HorizontalAlignment="Left" Height="24" IsReadOnly="True" Margin="10,1,0,0" Grid.Row="1" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="379" Grid.RowSpan="2"/>
                 <TextBox x:Name="tbPort" HorizontalAlignment="Left" Height="23" Margin="73,3,0,0" Grid.Row="2" TextWrapping="Wrap" Text="8080" VerticalAlignment="Top" Width="62"/>
                 <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,6,0,0" Grid.Row="2" TextWrapping="Wrap" Text="PORT 번호" VerticalAlignment="Top"/>
 
