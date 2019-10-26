@@ -14,6 +14,7 @@ using System.IO;
 using SharpRaven;
 using SharpRaven.Data;
 using System.Windows.Threading;
+using System.Net;
 
 namespace Dalsae
 {
@@ -24,6 +25,8 @@ namespace Dalsae
 	{
 		public App()
 		{
+			ServicePointManager.Expect100Continue = true;
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 			this.Dispatcher.UnhandledException += Dispatcher_UnhandledException;
 			this.Dispatcher.UnhandledExceptionFilter += Dispatcher_UnhandledExceptionFilter;
 			System.AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
